@@ -1,7 +1,7 @@
 {
   "name": "licensee",
   "description": "check licenses of npm depencies",
-  "version": "0.0.0-prerelease",
+  "version": "0.1.0",
   "author": {
     "name": "Kyle E. Mitchell",
     "email": "kyle@kemitchell.com",
