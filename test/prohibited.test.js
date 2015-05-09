@@ -26,6 +26,7 @@ require('tap').test('prohibited license', function(test) {
         [
           {
             package: 'a',
+            parents: [],
             license: 'GPL-3.0',
             message: 'cannot link GPL-3.0'
           }

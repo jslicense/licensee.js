@@ -1,3 +1,4 @@
+
 var fs = require('fs');
 var licensee = require('..');
 var path = require('path');
@@ -11,10 +12,24 @@ require('tap').test('missing license', function(test) {
       JSON.stringify({dependencies: {'a': '*'}})
     );
     fs.mkdirSync(path.join(tmp, 'node_modules'));
-    fs.mkdirSync(path.join(tmp, 'node_modules', 'a'));
+
+    var aPath = path.join(tmp, 'node_modules', 'a');
+    fs.mkdirSync(aPath);
     fs.writeFileSync(
-      path.join(tmp, 'node_modules', 'a', 'package.json'),
-      JSON.stringify({name: 'a'})
+      path.join(aPath, 'package.json'),
+      JSON.stringify({
+        name: 'a',
+        dependencies: {'b':'*'},
+        license: 'MIT'
+      })
+    );
+
+    fs.mkdirSync(path.join(aPath, 'node_modules'));
+    var bPath = path.join(aPath, 'node_modules', 'b');
+    fs.mkdirSync(bPath);
+    fs.writeFileSync(
+      path.join(bPath, 'package.json'),
+      JSON.stringify({name: 'b'})
     );
 
     var configuration = {};
@@ -25,8 +40,8 @@ require('tap').test('missing license', function(test) {
         problems,
         [
           {
-            package: 'a',
-            parents: [],
+            package: 'b',
+            parents: ['a'],
             license: null,
             message: 'no license'
           }

@@ -9,6 +9,40 @@ var allowAny = function() {
 
 var noError = null;
 
+var problemsWith = function(configuration, name, metadata, parents) {
+  var problems = [];
+  if (!metadata.hasOwnProperty('license')) {
+    problems.push({
+      package: name,
+      parents: parents,
+      license: null,
+      message: 'no license'
+    });
+  } else {
+    var license = metadata.license;
+    if (!configuration.link(license)) {
+      problems.push({
+        package: name,
+        parents: parents,
+        license: license,
+        message: 'cannot link ' + license
+      });
+    }
+  }
+  var dependencies = metadata.dependencies;
+  return Object.keys(dependencies)
+    .reduce(function(problems, dependencyName) {
+      return problems.concat(
+        problemsWith(
+          configuration,
+          dependencyName,
+          dependencies[dependencyName],
+          parents.concat(name)
+        )
+      );
+    }, problems);
+};
+
 module.exports = function(packagePath, configuration, callback) {
   uses.forEach(function(use) {
     if (configuration.hasOwnProperty(use)) {
@@ -25,28 +59,21 @@ module.exports = function(packagePath, configuration, callback) {
     if (error) {
       callback(error);
     } else {
-      var problems = [];
-      Object.keys(installed.dependencies)
-        .forEach(function(dependencyName) {
-          var metadata = installed.dependencies[dependencyName];
-          if (!metadata.hasOwnProperty('license')) {
-            problems.push({
-              package: dependencyName,
-              license: null,
-              message: 'no license'
-            });
-          } else {
-            var license = metadata.license;
-            if (!configuration.link(license)) {
-              problems.push({
-                package: dependencyName,
-                license: license,
-                message: 'cannot link ' + license
-              });
-            }
-          }
-        });
-      callback(noError, problems);
+      var dependencies = installed.dependencies;
+      callback(
+        noError,
+        Object.keys(dependencies)
+          .reduce(function(problems, dependencyName) {
+            return problems.concat(
+              problemsWith(
+                configuration,
+                dependencyName,
+                dependencies[dependencyName],
+                []
+              )
+            );
+          }, [])
+      );
     }
   });
 };

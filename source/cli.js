@@ -1,4 +1,5 @@
 var docopt = require('docopt');
+var Table = require('cli-table');
 var fs = require('fs');
 var licensee = require('..');
 var path = require('path');
@@ -34,14 +35,18 @@ module.exports = function(stdin, stdout, stderr, env, argv, callback) {
       if (problems.length === 0) {
         callback(0);
       } else {
-        problems.forEach(function(problem) {
-          stderr.write(
-            problem.package +
-            ' (' + (problem.license || 'None') + ')' +
-            '\n'
-          );
+        var table = new Table({
+          head: ['Package', 'License Metadata', 'Dependents']
         });
-        callback(1);
+        problems.forEach(function(problem) {
+          table.push([
+            problem.package,
+            (problem.license || 'None'),
+            problem.parents.join(' -> ')
+          ]);
+        });
+        process.stderr.write(table.toString() + '\n');
+        callback(problems.length === 0 ? 0 : 1);
       }
     });
   }
