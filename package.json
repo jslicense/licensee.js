@@ -1,0 +1,39 @@
+{
+  "name": "licensee",
+  "description": "check licenses of npm depencies",
+  "version": "0.0.0-prerelease",
+  "author": {
+    "name": "Kyle E. Mitchell",
+    "email": "kyle@kemitchell.com",
+    "url": "http://kemitchell.com"
+  },
+  "bugs": "https://github.com/jslicense/licensee.js/issues",
+  "dependencies": {
+    "read-installed": "4.0.0",
+    "spdx": "0.4.0"
+  },
+  "devDependencies": {
+    "jscs": "1.13.1",
+    "jshint": "2.7.0",
+    "tap": "1.0.2",
+    "temp": "0.8.1"
+  },
+  "homepage": "https://github.com/jslicense/licensee.js",
+  "keywords": [
+    "SPDX",
+    "audit",
+    "law",
+    "legal",
+    "license",
+    "metadata",
+    "package"
+  ],
+  "license": "Apache-2.0",
+  "main": "source/index.js",
+  "repository": "jslicense/licensee.js",
+  "scripts": {
+    "lint": "jshint source test && jscs source test",
+    "precommit": "npm run lint && npm run test",
+    "test": "tap test/*.test.js"
+  }
+}
