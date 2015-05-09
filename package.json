@@ -1,6 +1,6 @@
 {
   "name": "licensee",
-  "description": "check licenses of npm depencies",
+  "description": "check npm package licenses against a set of rules",
   "version": "0.1.0",
   "author": {
     "name": "Kyle E. Mitchell",
