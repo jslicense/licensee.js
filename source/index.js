@@ -11,7 +11,9 @@ var noError = null;
 
 var problemsWith = function(configuration, name, metadata, parents) {
   var problems = [];
-  if (!metadata.hasOwnProperty('license')) {
+  if (metadata.private === true) {
+    // pass
+  } else if (!metadata.hasOwnProperty('license')) {
     problems.push({
       package: name,
       parents: parents,
