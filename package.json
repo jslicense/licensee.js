@@ -7,8 +7,10 @@
     "email": "kyle@kemitchell.com",
     "url": "http://kemitchell.com"
   },
+  "bin": "./bin/licensee",
   "bugs": "https://github.com/jslicense/licensee.js/issues",
   "dependencies": {
+    "docopt": "0.6.2",
     "read-installed": "4.0.0",
     "spdx": "0.4.0"
   },

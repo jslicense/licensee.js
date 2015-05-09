@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+require('../source/cli')(
+  process.stdin,
+  process.stdout,
+  process.stderr,
+  process.env,
+  process.argv.slice(2),
+  function(status) {
+    process.exit(status);
+  }
+);

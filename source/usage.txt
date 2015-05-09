@@ -1,0 +1,6 @@
+Check npm package licenses against a set of rules
+
+Usage:
+  licensor [PATH]
+  licensor -h | --help
+  licensor -v | --version
