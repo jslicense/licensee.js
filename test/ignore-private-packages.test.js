@@ -5,16 +5,29 @@ var temp = require('temp').track();
 
 require('tap').test('missing license', function(test) {
   test.plan(2);
+
   temp.mkdir('test', function(error, tmp) {
     fs.writeFileSync(
       path.join(tmp, 'package.json'),
-      JSON.stringify({dependencies: {'a': '*'}})
+      JSON.stringify({
+        name: 'test',
+        version: '0.0.0',
+        dependencies: {
+          a: '*'
+        }
+      })
     );
     fs.mkdirSync(path.join(tmp, 'node_modules'));
-    fs.mkdirSync(path.join(tmp, 'node_modules', 'a'));
+
+    var aPath = path.join(tmp, 'node_modules', 'a');
+    fs.mkdirSync(path.join(aPath));
     fs.writeFileSync(
-      path.join(tmp, 'node_modules', 'a', 'package.json'),
-      JSON.stringify({name: 'a', private: true})
+      path.join(aPath, 'package.json'),
+      JSON.stringify({
+        name: 'a',
+        version: '0.0.0',
+        private: true
+      })
     );
 
     var configuration = {};

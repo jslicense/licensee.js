@@ -6,10 +6,17 @@ var temp = require('temp').track();
 
 require('tap').test('missing license', function(test) {
   test.plan(2);
+
   temp.mkdir('test', function(error, tmp) {
     fs.writeFileSync(
       path.join(tmp, 'package.json'),
-      JSON.stringify({dependencies: {'a': '*'}})
+      JSON.stringify({
+        name: 'test',
+        version: '0.0.0',
+        dependencies: {
+          a: '*'
+        }
+      })
     );
     fs.mkdirSync(path.join(tmp, 'node_modules'));
 
@@ -19,34 +26,35 @@ require('tap').test('missing license', function(test) {
       path.join(aPath, 'package.json'),
       JSON.stringify({
         name: 'a',
-        dependencies: {'b':'*'},
+        version: '0.0.0',
+        dependencies: {
+          b: '*'
+        },
         license: 'MIT'
       })
     );
-
     fs.mkdirSync(path.join(aPath, 'node_modules'));
+
     var bPath = path.join(aPath, 'node_modules', 'b');
     fs.mkdirSync(bPath);
     fs.writeFileSync(
       path.join(bPath, 'package.json'),
-      JSON.stringify({name: 'b'})
+      JSON.stringify({
+        name: 'b',
+        version: '0.0.0'
+      })
     );
 
     var configuration = {};
 
     licensee(tmp, configuration, function(error, problems) {
       test.error(error);
-      test.strictDeepEquals(
-        problems,
-        [
-          {
-            package: 'b',
-            parents: ['a'],
-            license: null,
-            message: 'no license'
-          }
-        ]
-      );
+      test.strictDeepEquals(problems, [{
+        package: 'b',
+        parents: ['a'],
+        license: null,
+        message: 'no license'
+      }]);
     });
   });
 });

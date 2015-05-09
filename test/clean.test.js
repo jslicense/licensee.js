@@ -5,10 +5,14 @@ var temp = require('temp').track();
 
 require('tap').test('clean', function(test) {
   test.plan(2);
+
   temp.mkdir('test', function(error, tmp) {
     fs.writeFileSync(
       path.join(tmp, 'package.json'),
-      JSON.stringify({})
+      JSON.stringify({
+        name: 'test',
+        version: '0.0.0'
+      })
     );
 
     var configuration = {};
