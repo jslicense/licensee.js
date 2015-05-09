@@ -5,7 +5,7 @@ licensee.js
 [![license](https://img.shields.io/badge/license-Apache--2.0-303284.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 [![build status](https://img.shields.io/travis/jslicense/licensee.js.svg)](http://travis-ci.org/jslicense/licensee.js)
 
-Check npm package licenses against a set of rules
+Check npm package licenses against a set of rules.
 
 At the command line:
 
@@ -27,3 +27,5 @@ licensee(path, configuration, function(error, problems) {
   console.error(problems);
 });
 ```
+
+`licensee` checks `license` properties in `package.json` metadata. Licensing of packages with `private: true` is ignored.
