@@ -12,7 +12,7 @@ At the command line:
 ```bash
 npm --global install licensee
 cd /your/package/path
-licensor
+licensee
 ```
 
 With Node.js:
