@@ -32,17 +32,20 @@ var problemsWith = function(configuration, name, metadata, parents) {
     }
   }
   var dependencies = metadata.dependencies;
-  return Object.keys(dependencies)
-    .reduce(function(problems, dependencyName) {
-      return problems.concat(
-        problemsWith(
-          configuration,
-          dependencyName,
-          dependencies[dependencyName],
-          parents.concat(name)
-        )
-      );
-    }, problems);
+  var devDependencies = metadata.devDependencies;
+  var pushProblem = function(problems, dependencyName) {
+    return problems.concat(
+      problemsWith(
+        configuration,
+        dependencyName,
+        dependencies[dependencyName],
+        parents.concat(name)
+      )
+    );
+  };
+  return problems
+    .concat(Object.keys(dependencies || {}).reduce(pushProblem, []))
+    .concat(Object.keys(devDependencies || {}).reduce(pushProblem, []));
 };
 
 module.exports = function(packagePath, configuration, callback) {
@@ -57,7 +60,7 @@ module.exports = function(packagePath, configuration, callback) {
     }
   });
 
-  readInstalled(packagePath, {}, function(error, installed) {
+  readInstalled(packagePath, {dev: true}, function(error, installed) {
     if (error) {
       callback(error);
     } else {
