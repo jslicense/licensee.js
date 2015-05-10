@@ -4,7 +4,7 @@ var licensee = require('..');
 var path = require('path');
 var temp = require('temp').track();
 
-require('tap').test('missing license', function(test) {
+require('tap').test('deep dependency', function(test) {
   test.plan(2);
 
   temp.mkdir('test', function(error, tmp) {
