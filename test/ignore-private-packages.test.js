@@ -3,7 +3,7 @@ var licensee = require('..');
 var path = require('path');
 var temp = require('temp').track();
 
-require('tap').test('missing license', function(test) {
+require('tap').test('ignore private packages', function(test) {
   test.plan(2);
 
   temp.mkdir('test', function(error, tmp) {
@@ -13,7 +13,8 @@ require('tap').test('missing license', function(test) {
         name: 'test',
         version: '0.0.0',
         dependencies: {
-          a: '*'
+          a: '*',
+          '@scope/b': '*'
         }
       })
     );
@@ -27,6 +28,18 @@ require('tap').test('missing license', function(test) {
         name: 'a',
         version: '0.0.0',
         private: true
+      })
+    );
+
+    var scopePath = path.join(tmp, 'node_modules', '@scope');
+    var bPath = path.join(scopePath, 'b');
+    fs.mkdirSync(scopePath);
+    fs.mkdirSync(bPath);
+    fs.writeFileSync(
+      path.join(bPath, 'package.json'),
+      JSON.stringify({
+        name: '@scope/b',
+        version: '0.0.0'
       })
     );
 

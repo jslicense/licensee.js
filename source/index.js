@@ -9,10 +9,19 @@ var allowAny = function() {
 
 var noError = null;
 
+var isPrivatePackage = function(metadata) {
+  return (
+    // A private package.
+    metadata.private === true ||
+    // A scoped package. Private by default.
+    metadata.name[0] === '@'
+  );
+};
+
 var problemsWith = function(configuration, name, metadata, parents) {
   var problems = [];
-  if (metadata.private === true) {
-    // pass
+  if (isPrivatePackage(metadata)) {
+    // Do not check the licenses of private packages.
   } else if (!metadata.hasOwnProperty('license')) {
     problems.push({
       package: name,
