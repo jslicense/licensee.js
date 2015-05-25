@@ -1,6 +1,6 @@
 Check npm package licenses against a set of rules
 
 Usage:
-  licensor [PATH]
-  licensor -h | --help
-  licensor -v | --version
+  licensee [PATH]
+  licensee -h | --help
+  licensee -v | --version

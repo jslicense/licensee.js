@@ -19,6 +19,7 @@ var isPrivatePackage = function(metadata) {
 };
 
 var problemsWith = function(configuration, name, metadata, parents) {
+  console.log(name);
   var problems = [];
   if (isPrivatePackage(metadata)) {
     // Do not check the licenses of private packages.
