@@ -19,33 +19,33 @@ function licensee(configuration, path, callback) {
     callback(new Error('Invalid license expression')) }
   else {
     // Read the package tree from `node_modules`.
-    readPackageTree(path, function(error, data) {
+    readPackageTree(path, function(error, tree) {
       if (error) {
         callback(error) }
       else {
-        callback(null, findIssues(configuration, data, [ ])) } }) } }
+        callback(null, findIssues(configuration, tree, [ ])) } }) } }
 
-function findIssues(configuration, data, issues) {
-  var dependencies = data.children
+function findIssues(configuration, tree, issues) {
+  var dependencies = tree.children
   // If there are dependencies, check license metadata.
   if (typeof dependencies === 'object') {
     return dependencies
       .reduce(
-        function(issues, data) {
-          if (!acceptablePackage(configuration, data)) {
+        function(issues, tree) {
+          if (!acceptablePackage(configuration, tree)) {
             issues.push({
-              name: data.package.name,
-              license: data.package.license,
-              version: data.package.version,
-              parent: data.parent,
-              path: data.path }) }
+              name: tree.package.name,
+              license: tree.package.license,
+              version: tree.package.version,
+              parent: tree.parent,
+              path: tree.path }) }
           // Recurse dependencies.
-          return findIssues(configuration, data, issues) },
+          return findIssues(configuration, tree, issues) },
         issues) }
   else {
     return issues } }
 
-function acceptablePackage(configuration, data) {
+function acceptablePackage(configuration, tree) {
   var licenseExpression = configuration.license
   var whitelist = configuration.whitelist
   return (
@@ -53,12 +53,12 @@ function acceptablePackage(configuration, data) {
     Object.keys(whitelist)
       .some(function(name) {
         return (
-          ( data.name === name ) &&
-          ( semverMatches(data.package.version, whitelist[name]) ) ) }) ||
+          ( tree.name === name ) &&
+          ( semverMatches(tree.package.version, whitelist[name]) ) ) }) ||
     // Does the package's license metadata match configuration?
     ( licenseExpression &&
       validSPDX(licenseExpression) &&
-      data.package.license &&
-      ( typeof data.package.license === 'string' ) &&
-      validSPDX(data.package.license) &&
-      licenseSatisfies(data.package.license, licenseExpression) ) ) }
+      tree.package.license &&
+      ( typeof tree.package.license === 'string' ) &&
+      validSPDX(tree.package.license) &&
+      licenseSatisfies(tree.package.license, licenseExpression) ) ) }
