@@ -1,1 +1,4 @@
-{ "name": "no-dependencies" }
+{
+  "name": "no-dependencies",
+  "private": true
+}

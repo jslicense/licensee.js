@@ -2,5 +2,6 @@
   "name": "unlicensed-subdependency",
   "dependencies": {
     "mit-licensed-depends-on-not-licensed": "1.0.1"
-  }
+  },
+  "private": true
 }

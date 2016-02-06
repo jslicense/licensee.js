@@ -3,5 +3,6 @@
   "dependencies": {
     "mit-licensed": "1.0.0"
     "apache-2.0-licensed": "1.0.0"
-  }
+  },
+  "private": true
 }
