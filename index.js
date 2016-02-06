@@ -3,18 +3,11 @@ module.exports = licensee
 var licenseSatisfies = require('spdx-satisfies')
 var readPackageTree = require('read-package-tree')
 var semverMatches = require('semver').match
-var tv4 = require('tv4')
 var validSPDX = require('spdx-expression-validate')
 
-var schema = require('./configuration-schema.json')
-
 function licensee(configuration, path, callback) {
-  // Check the configuration against schema.
-  var validation = tv4.validateMultiple(configuration, schema)
-  if (!validation.valid) {
+  if (!validConfiguration(configuration)) {
     callback(new Error('Invalid configuration')) }
-  // The schema only requires that `license` be a string.
-  // Check that it is a valid SPDX license expression.
   else if (!validSPDX(configuration.license)) {
     callback(new Error('Invalid license expression')) }
   else {
@@ -24,6 +17,26 @@ function licensee(configuration, path, callback) {
         callback(error) }
       else {
         callback(null, findIssues(configuration, tree, [ ])) } }) } }
+
+function validConfiguration(configuration) {
+  return (
+    isObject(configuration) &&
+    // Validate `license` property.
+    configuration.hasOwnProperty('license') &&
+    isString(configuration.license) &&
+    ( configuration.license.length > 0 ) &&
+    // Validate `whitelist` property.
+    configuration.hasOwnProperty('whitelist') &&
+    isObject(configuration.whitelist) &&
+    Object.keys(configuration.whitelist)
+      .every(function(key) {
+        return isString(configuration.whitelist[key]) }) ) }
+
+function isObject(argument) {
+  return ( typeof argument === 'object' ) }
+
+function isString(argument) {
+  return ( typeof argument === 'string' ) }
 
 function findIssues(configuration, tree, issues) {
   var dependencies = tree.children
