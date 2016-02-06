@@ -1,0 +1,11 @@
+{ "type": "object",
+  "properties": {
+    "license": {
+      "type": "string",
+      "minLength": 1 },
+    "whitelist": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "type": "string" } } } },
+  "required": [ "license", "whitelist" ] }

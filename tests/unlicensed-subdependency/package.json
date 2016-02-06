@@ -1,0 +1,6 @@
+{
+  "name": "unlicensed-subdependency",
+  "dependencies": {
+    "mit-licensed-depends-on-not-licensed": "*"
+  }
+}

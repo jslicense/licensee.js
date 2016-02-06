@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+var fs = require('fs')
+var path = require('path')
+var validSPDX = require('spdx-expression-validate')
+
+var cwd = process.cwd()
+var configurationPath = path.join(cwd, '.licensee.json')
+
+fs.access(configurationPath, fs.R_OK, function(error) {
+  if (error) { die('Cannot read ' + configurationPath) }
+  else {
+    fs.readFile(configurationPath, function(error, data) {
+      if (error) { die('Error reading ' + configurationPath) }
+      else {
+        var configuration
+        try { configuration = JSON.parse(data) }
+        catch (error) { die('Error parsing ' + configurationPath) }
+        require('./')(configuration, cwd, function(error, issues) {
+          if (error) { die(error.message + '\n') }
+          else {
+            if (issues.length === 0) { process.exit(0) }
+            else {
+              issues.forEach(function(issue) {
+                process.stderr.write(formatIssue(issue) + '\n') })
+              process.exit(1) } } }) } }) } })
+
+function formatIssue(issue) {
+  var parents = parentsList(issue)
+  return (
+    ( ( parents.length > 1 ) ? parents.join(' > ') : '' ) +
+      issue.name + ' (' + displayLicense(issue.license) + ')' ) }
+
+function parentsList(data, list) {
+  list = ( list || [ ] )
+  if ('parent' in data) {
+    return parentsList(data.parent, [ data.parent.name ].concat(list)) }
+  else { return list } }
+
+function displayLicense(license) {
+  if (typeof license === 'string') {
+    if (validSPDX(license)) { return license }
+    else { return ( 'Invalid SPDX expression "' + license + '"' ) } }
+  else if (Array.isArray(license)) { return ( JSON.stringify(license) ) }
+  else { return 'Invalid license property' } }
+
+function die(message) {
+  process.stderr.write(message + '\n')
+  process.exit(1) }
