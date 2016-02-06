@@ -10,6 +10,13 @@
     "spdx-satisfies": "^0.1.3",
     "tv4": "^1.2.7"
   },
+  "files": [
+    "LICENSE",
+    "NOTICE",
+    "configuration-schema.json",
+    "index.js",
+    "licensee"
+  ],
   "devDependencies": {
     "tap": "^5.4.2"
   },
