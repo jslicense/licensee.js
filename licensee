@@ -1,6 +1,17 @@
 #!/usr/bin/env node
 var fs = require('fs')
 var path = require('path')
+
+if (process.argv[2] === '--init') {
+  fs.writeFileSync(
+    path.join(process.cwd(), '.licensee.json'),
+    ( JSON.stringify(
+        { license: '(MIT OR BSD-2-Clause OR Apache-2.0)',
+          whitlist: { } },
+        null, 2) +
+      '\n' ))
+  process.exit(0) }
+
 var validSPDX = require('spdx-expression-validate')
 
 var cwd = process.cwd()
