@@ -1,10 +1,10 @@
 module.exports = licensee
 
 var licenseSatisfies = require('spdx-satisfies')
-var validSPDX = require('spdx-expression-validate')
-var readIntalled = require('read-installed')
+var readPackageTree = require('read-package-tree')
 var semverMatches = require('semver').match
 var tv4 = require('tv4')
+var validSPDX = require('spdx-expression-validate')
 
 var schema = require('./schema.json')
 
@@ -15,23 +15,23 @@ function licensee(configuration, path, callback) {
   else if (!validSPDX(configuration.license)) {
     callback(new Error('Invalid license expression')) }
   else {
-    readIntalled(path, { dev: false }, function(error, data) {
+    readPackageTree(path, function(error, data) {
       if (error) {
         callback(error) }
       else {
         callback(null, findIssues(configuration, data, [ ])) } }) } }
 
 function findIssues(configuration, data, issues) {
-  var dependencies = data.dependencies
-  if (typeof data.dependencies === 'object') {
-    return Object.keys(dependencies)
+  var dependencies = data.children
+  if (typeof dependencies === 'object') {
+    return dependencies
       .reduce(
-        function(issues, name) {
-          var data = dependencies[name]
+        function(issues, data) {
           if (!acceptablePackage(configuration, data)) {
             issues.push({
-              name: data.name,
-              license: data.license,
+              name: data.package.name,
+              license: data.package.license,
+              version: data.package.version,
               parent: data.parent,
               path: data.path }) }
           return findIssues(configuration, data, issues) },
@@ -47,10 +47,10 @@ function acceptablePackage(configuration, data) {
       .some(function(name) {
         return (
           ( data.name === name ) &&
-          ( semverMatches(data.version, whitelist[name]) ) ) }) ||
+          ( semverMatches(data.package.version, whitelist[name]) ) ) }) ||
     ( licenseExpression &&
       validSPDX(licenseExpression) &&
-      data.license &&
-      ( typeof data.license === 'string' ) &&
-      validSPDX(data.license) &&
-      licenseSatisfies(data.license, licenseExpression) ) ) }
+      data.package.license &&
+      ( typeof data.package.license === 'string' ) &&
+      validSPDX(data.package.license) &&
+      licenseSatisfies(data.package.license, licenseExpression) ) ) }

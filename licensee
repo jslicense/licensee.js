@@ -25,23 +25,16 @@ fs.access(configurationPath, fs.R_OK, function(error) {
               process.exit(1) } } }) } }) } })
 
 function formatIssue(issue) {
-  var parents = parentsList(issue)
   return (
-    ( ( parents.length > 1 ) ? parents.join(' > ') : '' ) +
-      issue.name + ' (' + displayLicense(issue.license) + ')' ) }
-
-function parentsList(data, list) {
-  list = ( list || [ ] )
-  if ('parent' in data) {
-    return parentsList(data.parent, [ data.parent.name ].concat(list)) }
-  else { return list } }
+    issue.name + '@' + issue.version +
+    ' (' + displayLicense(issue.license) + ')' ) }
 
 function displayLicense(license) {
   if (typeof license === 'string') {
     if (validSPDX(license)) { return license }
     else { return ( 'Invalid SPDX expression "' + license + '"' ) } }
   else if (Array.isArray(license)) { return ( JSON.stringify(license) ) }
-  else { return 'Invalid license property' } }
+  else { return 'Invalid license metadata' } }
 
 function die(message) {
   process.stderr.write(message + '\n')

@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "dependencies": {
-    "read-installed": "^4.0.3",
+    "read-package-tree": "^5.1.2",
     "semver": "^5.1.0",
     "spdx-expression-validate": "^1.0.1",
     "spdx-satisfies": "^0.1.3",

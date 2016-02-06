@@ -6,4 +6,6 @@ tap.equal(results.status, 1)
 
 tap.equal(
   results.stderr.trim(),
-  'mit-licensed-dependes-on-not-licensed > not-licensed')
+  [ 'mit-licensed-depends-on-not-licensed@1.0.1 (MIT)',
+    'not-licensed@1.0.0 (Invalid license metadata)' ]
+    .join('\n'))

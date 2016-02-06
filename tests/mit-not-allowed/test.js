@@ -6,4 +6,4 @@ tap.equal(results.status, 1)
 
 tap.equal(
   results.stderr.trim(),
-  'mit-licensed (MIT)')
+  'mit-licensed@1.0.0 (MIT)')
