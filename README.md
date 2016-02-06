@@ -6,8 +6,7 @@ Create a `.licensee.json` file at the root of your package. Here is an example.
 
 ```json
 { "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR ISC OR Apache-2.0)",
-  "whitelist": {
-    "optimist": "<=0.6.1" } }
+  "whitelist": { "optimist": "<=0.6.1" } }
 ```
 
 The `license` property is an SPDX license expression that
@@ -50,9 +49,7 @@ npm install --save-dev licensee
 Consider adding `licensee` to your npm scripts:
 
 ```json
-{ "scripts": {
-    "test": "...",
-    "posttest": "licensee" } }
+{ "scripts": { "posttest": "licensee" } }
 ```
 
 # JavaScript Module
