@@ -6,7 +6,7 @@ var semverMatches = require('semver').match
 var tv4 = require('tv4')
 var validSPDX = require('spdx-expression-validate')
 
-var schema = require('./schema.json')
+var schema = require('./configuration-schema.json')
 
 function licensee(configuration, path, callback) {
   var validation = tv4.validateMultiple(configuration, schema)
