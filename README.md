@@ -5,7 +5,7 @@ Check dependency licenses against rules.
 Create a `.licensee.json` file at the root of your package. Here is an example.
 
 ```json
-{ "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR ISC OR Apache-2.0)",
+{ "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR ISC OR Apache-2.0 OR WTFPL OR Unlicense)",
   "whitelist": { "optimist": "<=0.6.1" } }
 ```
 
