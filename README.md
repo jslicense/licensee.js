@@ -52,6 +52,14 @@ Consider adding `licensee` to your npm scripts:
 { "scripts": { "posttest": "licensee" } }
 ```
 
+If you want a readout of license problems, but don't want your
+continuous integration going red, you can ignore `licensee`'s exit
+code:
+
+```json
+{ "scripts": { "posttest": "licensee || true" } }
+```
+
 # JavaScript Module
 
 The package exports an asynchronous function of three arguments:
