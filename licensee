@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+var access = require('fs-access')
 var fs = require('fs')
 var path = require('path')
 
@@ -19,7 +20,7 @@ var validSPDX = require('spdx-expression-validate')
 var cwd = process.cwd()
 var configurationPath = path.join(cwd, '.licensee.json')
 
-fs.access(configurationPath, fs.R_OK, function (error) {
+access(configurationPath, function (error) {
   if (error) die('Cannot read ' + configurationPath)
   else {
     fs.readFile(configurationPath, function (error, data) {
