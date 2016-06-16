@@ -3,50 +3,67 @@ var fs = require('fs')
 var path = require('path')
 
 if (process.argv[2] === '--init') {
+  var template = {
+    license: '(MIT OR BSD-2-Clause OR Apache-2.0)',
+    whitelist: {}
+  }
   fs.writeFileSync(
     path.join(process.cwd(), '.licensee.json'),
-    ( JSON.stringify(
-        { license: '(MIT OR BSD-2-Clause OR Apache-2.0)',
-          whitlist: { } },
-        null, 2) +
-      '\n' ))
-  process.exit(0) }
+    JSON.stringify(template, null, 2) + '\n'
+  )
+  process.exit(0)
+}
 
 var validSPDX = require('spdx-expression-validate')
 
 var cwd = process.cwd()
 var configurationPath = path.join(cwd, '.licensee.json')
 
-fs.access(configurationPath, fs.R_OK, function(error) {
-  if (error) { die('Cannot read ' + configurationPath) }
+fs.access(configurationPath, fs.R_OK, function (error) {
+  if (error) die('Cannot read ' + configurationPath)
   else {
-    fs.readFile(configurationPath, function(error, data) {
-      if (error) { die('Error reading ' + configurationPath) }
+    fs.readFile(configurationPath, function (error, data) {
+      if (error) die('Error reading ' + configurationPath)
       else {
         var configuration
-        try { configuration = JSON.parse(data) }
-        catch (error) { die('Error parsing ' + configurationPath) }
-        require('./')(configuration, cwd, function(error, issues) {
-          if (error) { die(error.message + '\n') }
+        try {
+          configuration = JSON.parse(data)
+        } catch (error) {
+          die('Error parsing ' + configurationPath)
+        }
+        require('./')(configuration, cwd, function (error, issues) {
+          if (error) die(error.message + '\n')
           else {
-            if (issues.length === 0) { process.exit(0) }
+            if (issues.length === 0) process.exit(0)
             else {
-              issues.forEach(function(issue) {
-                process.stderr.write(formatIssue(issue) + '\n') })
-              process.exit(1) } } }) } }) } })
+              issues.forEach(function (issue) {
+                process.stderr.write(formatIssue(issue) + '\n')
+              })
+              process.exit(1)
+            }
+          }
+        })
+      }
+    })
+  }
+})
 
-function formatIssue(issue) {
+function formatIssue (issue) {
   return (
     issue.name + '@' + issue.version +
-    ' (' + displayLicense(issue.license) + ')' ) }
+    ' (' + displayLicense(issue.license) + ')'
+  )
+}
 
-function displayLicense(license) {
+function displayLicense (license) {
   if (typeof license === 'string') {
-    if (validSPDX(license)) { return license }
-    else { return ( 'Invalid SPDX expression "' + license + '"' ) } }
-  else if (Array.isArray(license)) { return ( JSON.stringify(license) ) }
-  else { return 'Invalid license metadata' } }
+    if (validSPDX(license)) return license
+    else return 'Invalid SPDX expression "' + license + '"'
+  } else if (Array.isArray(license)) return JSON.stringify(license)
+  else return 'Invalid license metadata'
+}
 
-function die(message) {
+function die (message) {
   process.stderr.write(message + '\n')
-  process.exit(1) }
+  process.exit(1)
+}

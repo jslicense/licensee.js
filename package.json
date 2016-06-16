@@ -17,11 +17,13 @@
     "licensee"
   ],
   "devDependencies": {
+    "standard": "^7.1.2",
     "tap": "^5.4.2"
   },
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
+    "style": "standard",
     "test": "tap tests/**/test.js"
   }
 }
