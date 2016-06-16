@@ -1,11 +1,11 @@
 module.exports = run
 
-var child = require('child_process')
+var spawnSync = require('spawn-sync')
 
 function run (args, cwd) {
-  child.spawnSync('npm', ['prune'], {cwd: cwd})
-  child.spawnSync('npm', ['install'], {cwd: cwd})
-  var result = child.spawnSync('../../licensee', args, {cwd: cwd})
+  spawnSync('npm', ['prune'], {cwd: cwd})
+  spawnSync('npm', ['install'], {cwd: cwd})
+  var result = spawnSync('../../licensee', args, {cwd: cwd})
   result.stdout = result.stdout.toString().trim()
   result.stderr = result.stderr.toString().trim()
   return result
