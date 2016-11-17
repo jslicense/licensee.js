@@ -2,7 +2,7 @@ module.exports = licensee
 
 var licenseSatisfies = require('spdx-satisfies')
 var readPackageTree = require('read-package-tree')
-var semverMatches = require('semver').match
+var satisfies = require('semver').satisfies
 var validSPDX = require('spdx-expression-validate')
 
 function licensee (configuration, path, callback) {
@@ -72,8 +72,8 @@ function acceptablePackage (configuration, tree) {
     // Is the package on the whitelist?
     Object.keys(whitelist).some(function (name) {
       return (
-        tree.name === name &&
-        semverMatches(tree.package.version, whitelist[name])
+        tree.package.name === name &&
+        satisfies(tree.package.version, whitelist[name]) === true
       )
     }) ||
     // Does the package's license metadata match configuration?
