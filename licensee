@@ -1,53 +1,84 @@
 #!/usr/bin/env node
 var access = require('fs-access')
+var docopt = require('docopt')
 var fs = require('fs')
 var path = require('path')
-
-if (process.argv[2] === '--init') {
-  var template = {
-    license: '(MIT OR BSD-2-Clause OR Apache-2.0)',
-    whitelist: {}
-  }
-  fs.writeFileSync(
-    path.join(process.cwd(), '.licensee.json'),
-    JSON.stringify(template, null, 2) + '\n'
-  )
-  process.exit(0)
-}
-
 var validSPDX = require('spdx-expression-validate')
 
-var cwd = process.cwd()
-var configurationPath = path.join(cwd, '.licensee.json')
+var USAGE = [
+  'Check npm package dependency license metadata against rules.',
+  '',
+  'Usage: licensee [options]',
+  '',
+  'Options:',
+  '  --license EXPRESSION  Permit licenses matching SPDX expression.',
+  '  --whitelist LIST      Permit comma-delimited name@range.',
+  '  -h, --help            Print this screen to standard output.',
+  '  -v, --version         Print version to standard output.'
+].join('\n')
 
-access(configurationPath, function (error) {
-  if (error) die('Cannot read ' + configurationPath)
-  else {
-    fs.readFile(configurationPath, function (error, data) {
-      if (error) die('Error reading ' + configurationPath)
-      else {
-        var configuration
-        try {
-          configuration = JSON.parse(data)
-        } catch (error) {
-          die('Error parsing ' + configurationPath)
-        }
-        require('./')(configuration, cwd, function (error, issues) {
-          if (error) die(error.message + '\n')
-          else {
-            if (issues.length === 0) process.exit(0)
-            else {
-              issues.forEach(function (issue) {
-                process.stderr.write(formatIssue(issue) + '\n')
-              })
-              process.exit(1)
-            }
-          }
-        })
-      }
-    })
-  }
+var options = docopt.docopt(USAGE, {
+  version: require('./package.json').version
 })
+
+var cwd = process.cwd()
+var configuration
+
+if (options['--license'] || options['--whitelist']) {
+  configuration = {
+    license: options['--license'] || undefined,
+    whitelist: options['--whitelist']
+      ? options['--whitelist']
+        .split(',')
+        .map(function (string) {
+          return string.trim()
+        })
+        .reduce(function (whitelist, string) {
+          var split = string.split('@')
+          whitelist[split[0]] = split[1]
+          return whitelist
+        }, {})
+      : {}
+  }
+  checkDependencies()
+} else {
+  var configurationPath = path.join(cwd, '.licensee.json')
+  access(configurationPath, function (error) {
+    if (error) {
+      die('Cannot read ' + configurationPath)
+    } else {
+      fs.readFile(configurationPath, function (error, data) {
+        if (error) {
+          die('Error reading ' + configurationPath)
+        } else {
+          try {
+            configuration = JSON.parse(data)
+          } catch (error) {
+            die('Error parsing ' + configurationPath)
+          }
+          checkDependencies()
+        }
+      })
+    }
+  })
+}
+
+function checkDependencies () {
+  require('./')(configuration, cwd, function (error, issues) {
+    if (error) {
+      die(error.message + '\n')
+    } else {
+      if (issues.length === 0) {
+        process.exit(0)
+      } else {
+        issues.forEach(function (issue) {
+          process.stderr.write(formatIssue(issue) + '\n')
+        })
+        process.exit(1)
+      }
+    }
+  })
+}
 
 function formatIssue (issue) {
   return (
@@ -58,10 +89,16 @@ function formatIssue (issue) {
 
 function displayLicense (license) {
   if (typeof license === 'string') {
-    if (validSPDX(license)) return license
-    else return 'Invalid SPDX expression "' + license + '"'
-  } else if (Array.isArray(license)) return JSON.stringify(license)
-  else return 'Invalid license metadata'
+    if (validSPDX(license)) {
+      return license
+    } else {
+      return 'Invalid SPDX expression "' + license + '"'
+    }
+  } else if (Array.isArray(license)) {
+    return JSON.stringify(license)
+  } else {
+    return 'Invalid license metadata'
+  }
 }
 
 function die (message) {

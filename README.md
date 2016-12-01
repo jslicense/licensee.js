@@ -1,11 +1,17 @@
-Check dependency licenses against rules.
+Check npm package dependency license metadata against rules.
 
 # Configuration
 
-Create a `.licensee.json` file at the root of your package. Here is an example.
+Licensee accepts two kinds of configuration:
+
+1. a rule about permitted licenses
+2. a package whitelist of name-and-range pairs
+
+You can set configuration with command flags or a `.licensee.json`
+file at the root of your package, like so:
 
 ```json
-{ "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR ISC OR Apache-2.0 OR WTFPL OR Unlicense)",
+{ "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)",
   "whitelist": { "optimist": "<=0.6.1" } }
 ```
 
