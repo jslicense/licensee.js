@@ -64,26 +64,42 @@ if (options['--license'] || options['--whitelist']) {
 }
 
 function checkDependencies () {
-  require('./')(configuration, cwd, function (error, issues) {
+  require('./')(configuration, cwd, function (error, dependencies) {
     if (error) {
       die(error.message + '\n')
     } else {
-      if (issues.length === 0) {
+      if (dependencies.length === 0) {
         process.exit(0)
       } else {
-        issues.forEach(function (issue) {
-          process.stderr.write(formatIssue(issue) + '\n')
+        var haveIssue = false
+        dependencies.forEach(function (dependency) {
+          if (!dependency.approved) {
+            haveIssue = true
+          }
+          process.stdout.write(formatResult(dependency) + '\n')
         })
-        process.exit(1)
+        process.exit(haveIssue ? 1 : 0)
       }
     }
   })
 }
 
-function formatIssue (issue) {
+function formatResult (result) {
   return (
-    issue.name + '@' + issue.version +
-    ' (' + displayLicense(issue.license) + ')'
+    result.name + '@' + result.version + '\n' +
+    (
+      result.approved
+      ? (
+        '  Approved by ' +
+        (result.whitelisted ? 'whitelist' : 'rule') + '\n'
+      )
+      : '  NOT APPROVED\n'
+    ) +
+    '  Terms: ' + displayLicense(result.license) + '\n' +
+    '  Repository: ' + formatRepo(result.repository) + '\n' +
+    '  Homepage: ' + formatRepo(result.homepage) + '\n' +
+    '  Author: ' + formatPerson(result.author) + '\n' +
+    '  Contributors:' + formatPeople(result.contributors) + '\n'
   )
 }
 
@@ -98,6 +114,46 @@ function displayLicense (license) {
     return JSON.stringify(license)
   } else {
     return 'Invalid license metadata'
+  }
+}
+
+function formatPeople (people) {
+  if (Array.isArray(people)) {
+    return '\n' + people
+      .map(function (person) {
+        return '    ' + formatPerson(person)
+      })
+      .join('\n')
+  } else if (typeof people === 'string') {
+    return ' ' + people
+  } else {
+    return ' None listed'
+  }
+}
+
+function formatPerson (person) {
+  if (!person) {
+    return 'None listed'
+  } else if (typeof person === 'string') {
+    return person
+  } else {
+    return (
+      person.name +
+      (person.email ? ' <' + person.email + '>' : '') +
+      (person.url ? ' (' + person.url + ')' : '')
+    )
+  }
+}
+
+function formatRepo (repo) {
+  if (repo) {
+    if (typeof repo === 'string') {
+      return repo
+    } else if (repo.hasOwnProperty('url')) {
+      return repo.url
+    }
+  } else {
+    return 'None listed'
   }
 }
 

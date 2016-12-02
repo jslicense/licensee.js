@@ -1,9 +1,10 @@
 var tap = require('tap')
 
-var results = require('../run')([ ], __dirname)
+var results = require('../run')([], __dirname)
 
 tap.equal(results.status, 1)
 
 tap.equal(
-  results.stderr.trim(),
-  'mit-licensed@1.0.0 (MIT)')
+  results.stdout.indexOf('NOT APPROVED') > -1,
+  true
+)

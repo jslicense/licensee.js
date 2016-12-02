@@ -44,40 +44,43 @@ function isString (argument) {
   return typeof argument === 'string'
 }
 
-function findIssues (configuration, tree, issues) {
+function findIssues (configuration, tree, results) {
   var dependencies = tree.children
   // If there are dependencies, check license metadata.
   if (typeof dependencies === 'object') {
-    return dependencies
-      .reduce(function (issues, tree) {
-        if (!acceptablePackage(configuration, tree)) {
-          issues.push({
-            name: tree.package.name,
-            license: tree.package.license,
-            version: tree.package.version,
-            parent: tree.parent,
-            path: tree.path
-          })
-        }
-        // Recurse dependencies.
-        return findIssues(configuration, tree, issues)
-      }, issues)
-  } else return issues
+    dependencies.forEach(function (tree) {
+      results.push(resultForPackage(configuration, tree))
+      findIssues(configuration, tree, results)
+    })
+    return results
+  } else return results
 }
 
-function acceptablePackage (configuration, tree) {
+function resultForPackage (configuration, tree) {
   var licenseExpression = configuration.license
   var whitelist = configuration.whitelist
-  return (
-    // Is the package on the whitelist?
-    Object.keys(whitelist).some(function (name) {
-      return (
-        tree.package.name === name &&
-        satisfies(tree.package.version, whitelist[name]) === true
-      )
-    }) ||
-    // Does the package's license metadata match configuration?
-    (
+  var result = {
+    name: tree.package.name,
+    license: tree.package.license,
+    author: tree.package.author,
+    contributors: tree.package.contributors,
+    repository: tree.package.repository,
+    homepage: tree.package.homepage,
+    version: tree.package.version,
+    parent: tree.parent,
+    path: tree.path
+  }
+  var whitelisted = Object.keys(whitelist).some(function (name) {
+    return (
+      tree.package.name === name &&
+      satisfies(tree.package.version, whitelist[name]) === true
+    )
+  })
+  if (whitelisted) {
+    result.approved = true
+    result.whitelisted = true
+  } else {
+    var matchesRule = (
       licenseExpression &&
       validSPDX(licenseExpression) &&
       tree.package.license &&
@@ -85,5 +88,12 @@ function acceptablePackage (configuration, tree) {
       validSPDX(tree.package.license) &&
       licenseSatisfies(tree.package.license, licenseExpression)
     )
-  )
+    if (matchesRule) {
+      result.approved = true
+      result.rule = true
+    } else {
+      result.approved = false
+    }
+  }
+  return result
 }
