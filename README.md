@@ -11,8 +11,12 @@ You can set configuration with command flags or a `.licensee.json`
 file at the root of your package, like so:
 
 ```json
-{ "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)",
-  "whitelist": { "optimist": "<=0.6.1" } }
+{
+  "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)",
+  "whitelist": {
+    "optimist": "<=0.6.1"
+  }
+}
 ```
 
 The `license` property is an SPDX license expression that
@@ -41,9 +45,10 @@ cd your-package
 licensee
 ```
 
-The `licensee` script will exit with status `0` when all packages in
-`./node_modules` meet the configured licensing criteria and `1` when
-one or more do not.
+The `licensee` script prints a report about dependencies and their
+license terms to standard output.  It exits with status `0` when all
+packages in `./node_modules` meet the configured licensing criteria
+and `1` when one or more do not.
 
 To install it as a development dependency of your package:
 
@@ -55,15 +60,33 @@ npm install --save-dev licensee
 Consider adding `licensee` to your npm scripts:
 
 ```json
-{ "scripts": { "posttest": "licensee" } }
+{
+  "scripts": {
+    "posttest": "licensee"
+  }
+}
 ```
 
-If you want a readout of license problems, but don't want your
-continuous integration going red, you can ignore `licensee`'s exit
-code:
+If you want a readout of dependency information, but don't want
+your continuous integration going red, you can ignore `licensee`'s
+exit code:
 
 ```json
-{ "scripts": { "posttest": "licensee || true" } }
+{
+  "scripts": {
+    "posttest": "licensee || true"
+  }
+}
+```
+
+To save the readout of license information to a file:
+
+```json
+{
+  "scripts": {
+    "posttest": "licensee | tee LICENSES || true"
+  }
+}
 ```
 
 # JavaScript Module
@@ -74,5 +97,5 @@ The package exports an asynchronous function of three arguments:
 
 2. The path of the package to check.
 
-3. An error-first callback that yields an array of objects describing
-   licensing issues.
+3. An error-first callback that yields an array of objects, one per
+   dependency.
