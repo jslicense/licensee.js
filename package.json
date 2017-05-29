@@ -21,7 +21,7 @@
   "devDependencies": {
     "spawn-sync": "^1.0.15",
     "standard": "^10.0.2",
-    "tap": "^5.4.2"
+    "tap": "^10.3.2"
   },
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
