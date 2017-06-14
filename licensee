@@ -14,6 +14,7 @@ var USAGE = [
   '  --license EXPRESSION  Permit licenses matching SPDX expression.',
   '  --whitelist LIST      Permit comma-delimited name@range.',
   '  --errors-only         Only show NOT APPROVED packages.',
+  '  --quiet               Quiet mode, only exit(0/1).',
   '  -h, --help            Print this screen to standard output.',
   '  -v, --version         Print version to standard output.'
 ].join('\n')
@@ -80,12 +81,19 @@ function checkDependencies () {
           var isApproved = function () {
             return dependency.approved
           }
+          var isQuiet = function () {
+            return !!options['--quiet']
+          }
           var printResult = function () {
             process.stdout.write(formatResult(dependency) + '\n')
           }
 
           if (!isApproved()) {
             haveIssue = true
+          }
+
+          if (isQuiet()) {
+            return
           }
 
           if (!isApproved()) {
