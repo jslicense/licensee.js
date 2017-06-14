@@ -89,6 +89,24 @@ To save the readout of license information to a file:
 }
 ```
 
+## options
+
+```
+licensee -h
+Check npm package dependency license metadata against rules.
+
+Usage: licensee [options]
+
+Options:
+ --license EXPRESSION  Permit licenses matching SPDX expression.
+ --whitelist LIST      Permit comma-delimited name@range.
+ --errors-only         Only show NOT APPROVED packages.
+ --quiet               Quiet mode, only exit(0/1).
+ -h, --help            Print this screen to standard output.
+ -v, --version         Print version to standard output.
+```
+
+
 # JavaScript Module
 
 The package exports an asynchronous function of three arguments:
