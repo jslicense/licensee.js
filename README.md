@@ -89,6 +89,16 @@ To save the readout of license information to a file:
 }
 ```
 
+Alternatively, for a readout of just packages without approved licenses:
+
+```json
+{
+  "scripts": {
+    "posttest": "licensee --errors-only"
+  }
+}
+```
+
 # JavaScript Module
 
 The package exports an asynchronous function of three arguments:
