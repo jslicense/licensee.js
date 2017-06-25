@@ -73,39 +73,31 @@ function checkDependencies () {
       if (dependencies.length === 0) {
         process.exit(0)
       } else {
+        var errorsOnly = !!options['--errors-only']
+        var quiet = !!options['--quiet']
         var haveIssue = false
         dependencies.forEach(function (dependency) {
-          var hideNonError = function () {
-            return options['--errors-only']
-          }
-          var isApproved = function () {
-            return dependency.approved
-          }
-          var isQuiet = function () {
-            return !!options['--quiet']
-          }
-          var printResult = function () {
-            process.stdout.write(formatResult(dependency) + '\n')
-          }
-
-          if (!isApproved()) {
+          if (!dependency.approved) {
             haveIssue = true
           }
-
-          if (isQuiet()) {
-            return
-          }
-
-          if (!isApproved()) {
-            printResult()
-          } else if (!hideNonError()) {
-            printResult()
+          if (!quiet) {
+            if (errorsOnly) {
+              if (!dependency.approved) {
+                print(dependency)
+              }
+            } else {
+              print(dependency)
+            }
           }
         })
         process.exit(haveIssue ? 1 : 0)
       }
     }
   })
+}
+
+function print (dependency) {
+  process.stdout.write(formatResult(dependency) + '\n')
 }
 
 function formatResult (result) {
