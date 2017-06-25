@@ -67,6 +67,16 @@ Consider adding `licensee` to your npm scripts:
 }
 ```
 
+To skip the readout of license information:
+
+```json
+{
+  "scripts": {
+    "posttest": "licensee --quiet"
+  }
+}
+```
+
 If you want a readout of dependency information, but don't want
 your continuous integration going red, you can ignore `licensee`'s
 exit code:
