@@ -67,6 +67,16 @@ Consider adding `licensee` to your npm scripts:
 }
 ```
 
+For output as newline-delimited JSON objects, for further processing:
+
+```json
+{
+  "scripts": {
+    "posttest": "licensee --ndjson"
+  }
+}
+```
+
 To skip the readout of license information:
 
 ```json

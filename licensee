@@ -14,6 +14,7 @@ var USAGE = [
   '  --license EXPRESSION  Permit licenses matching SPDX expression.',
   '  --whitelist LIST      Permit comma-delimited name@range.',
   '  --errors-only         Only show NOT APPROVED packages.',
+  '  --ndjson              Print newline-delimited JSON objects.',
   '  --quiet               Quiet mode, only exit(0/1).',
   '  -h, --help            Print this screen to standard output.',
   '  -v, --version         Print version to standard output.'
@@ -75,6 +76,7 @@ function checkDependencies () {
       } else {
         var errorsOnly = !!options['--errors-only']
         var quiet = !!options['--quiet']
+        var ndjson = !!options['--ndjson']
         var haveIssue = false
         dependencies.forEach(function (dependency) {
           if (!dependency.approved) {
@@ -83,10 +85,10 @@ function checkDependencies () {
           if (!quiet) {
             if (errorsOnly) {
               if (!dependency.approved) {
-                print(dependency)
+                print(dependency, ndjson)
               }
             } else {
-              print(dependency)
+              print(dependency, ndjson)
             }
           }
         })
@@ -96,11 +98,15 @@ function checkDependencies () {
   })
 }
 
-function print (dependency) {
-  process.stdout.write(formatResult(dependency) + '\n')
+function print (dependency, ndjson) {
+  if (ndjson) {
+    process.stdout.write(toJSON(dependency) + '\n')
+  } else {
+    process.stdout.write(toText(dependency) + '\n')
+  }
 }
 
-function formatResult (result) {
+function toText (result) {
   return (
     result.name + '@' + result.version + '\n' +
     (
@@ -117,6 +123,16 @@ function formatResult (result) {
     '  Author: ' + formatPerson(result.author) + '\n' +
     '  Contributors:' + formatPeople(result.contributors) + '\n'
   )
+}
+
+function toJSON (dependency) {
+  var returned = {}
+  Object.keys(dependency).forEach(function (key) {
+    if (key !== 'parent') {
+      returned[key] = dependency[key]
+    }
+  })
+  return JSON.stringify(returned)
 }
 
 function displayLicense (license) {
