@@ -11,6 +11,7 @@ var USAGE = [
   'Usage: licensee [options]',
   '',
   'Options:',
+  '  --init                Create a .licensee.json file.',
   '  --license EXPRESSION  Permit licenses matching SPDX expression.',
   '  --whitelist LIST      Permit comma-delimited name@range.',
   '  --errors-only         Only show NOT APPROVED packages.',
@@ -26,32 +27,55 @@ var options = docopt.docopt(USAGE, {
 
 var cwd = process.cwd()
 var configuration
+var configurationPath = path.join(cwd, '.licensee.json')
 
-if (options['--license'] || options['--whitelist']) {
+if (options['--init']) {
+  fs.writeFile(
+    configurationPath,
+    JSON.stringify({
+      license: (
+        options['--expression'] ||
+        '(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)'
+      ),
+      whitelist: (
+        options['--whitelist']
+          ? parseWhitelist(options['--whitelist'])
+          : {optimist: '<=0.6.1'}
+      )
+    }, null, 2) + '\n',
+    {
+      encoding: 'utf8',
+      flag: 'wx'
+    },
+    function (error) {
+      if (error) {
+        if (error.code === 'EEXIST') {
+          die(configurationPath + ' already exists.')
+        } else {
+          die('Could not create ' + configurationPath + '.')
+        }
+      } else {
+        process.stdout.write('Created ' + configurationPath + '.\n')
+        process.exit(0)
+      }
+    }
+  )
+} else if (options['--license'] || options['--whitelist']) {
   configuration = {
     license: options['--license'] || undefined,
     whitelist: options['--whitelist']
-      ? options['--whitelist']
-        .split(',')
-        .map(function (string) {
-          return string.trim()
-        })
-        .reduce(function (whitelist, string) {
-          var split = string.split('@')
-          whitelist[split[0]] = split[1]
-          return whitelist
-        }, {})
+      ? parseWhitelist(options['--whitelist'])
       : {}
   }
   checkDependencies()
 } else {
-  var configurationPath = path.join(cwd, '.licensee.json')
   access(configurationPath, function (error) {
     if (error) {
       die(
         [
           'Cannot read ' + configurationPath + '.',
-          'Create ' + configurationPath + ' or configure via flags.',
+          'Create ' + configurationPath + ' with licensee --init',
+          'or configure with --license and --whitelist.',
           'See licensee --help for more information.'
         ].join('\n')
       )
@@ -198,4 +222,17 @@ function formatRepo (repo) {
 function die (message) {
   process.stderr.write(message + '\n')
   process.exit(1)
+}
+
+function parseWhitelist (string) {
+  return string
+    .split(',')
+    .map(function (string) {
+      return string.trim()
+    })
+    .reduce(function (whitelist, string) {
+      var split = string.split('@')
+      whitelist[split[0]] = split[1]
+      return whitelist
+    }, {})
 }

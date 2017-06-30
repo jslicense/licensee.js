@@ -42,6 +42,7 @@ To install and use `licensee` globally:
 ```bash
 npm install --global licensee
 cd your-package
+licensee --init
 licensee
 ```
 
