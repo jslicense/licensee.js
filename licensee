@@ -48,7 +48,13 @@ if (options['--license'] || options['--whitelist']) {
   var configurationPath = path.join(cwd, '.licensee.json')
   access(configurationPath, function (error) {
     if (error) {
-      die('Cannot read ' + configurationPath)
+      die(
+        [
+          'Cannot read ' + configurationPath + '.',
+          'Create ' + configurationPath + ' or configure via flags.',
+          'See licensee --help for more information.'
+        ].join('\n')
+      )
     } else {
       fs.readFile(configurationPath, function (error, data) {
         if (error) {
