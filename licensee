@@ -8,7 +8,9 @@ var validSPDX = require('spdx-expression-validate')
 var USAGE = [
   'Check npm package dependency license metadata against rules.',
   '',
-  'Usage: licensee [options]',
+  'Usage:',
+  '  licensee [options]',
+  '  licensee --license=EXPRESSION [--whitelist=LIST] [options]',
   '',
   'Options:',
   '  --init                Create a .licensee.json file.',
