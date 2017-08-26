@@ -17,6 +17,7 @@ var USAGE = [
   '  --license EXPRESSION  Permit licenses matching SPDX expression.',
   '  --whitelist LIST      Permit comma-delimited name@range.',
   '  --errors-only         Only show NOT APPROVED packages.',
+  '  --production          Do not check devDependencies.',
   '  --ndjson              Print newline-delimited JSON objects.',
   '  --quiet               Quiet mode, only exit(0/1).',
   '  -h, --help            Print this screen to standard output.',
@@ -99,6 +100,7 @@ if (options['--init']) {
 }
 
 function checkDependencies () {
+  configuration.productionOnly = options['--production']
   require('./')(configuration, cwd, function (error, dependencies) {
     if (error) {
       die(error.message + '\n')

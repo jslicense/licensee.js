@@ -6,8 +6,11 @@
   "dependencies": {
     "docopt": "^0.6.2",
     "fs-access": "^1.0.0",
+    "json-parse-errback": "^2.0.1",
     "read-package-tree": "^5.1.2",
+    "run-parallel": "^1.1.6",
     "semver": "^5.1.0",
+    "simple-concat": "^1.0.0",
     "spdx-expression-validate": "^1.0.1",
     "spdx-satisfies": "^0.1.3"
   },
