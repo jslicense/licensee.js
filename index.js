@@ -51,6 +51,9 @@ function findIssues (configuration, tree, results) {
     dependencies.forEach(function (tree) {
       results.push(resultForPackage(configuration, tree))
       findIssues(configuration, tree, results)
+      if (tree.hasOwnProperty('children')) {
+        findIssues(configuration, tree.children, results)
+      }
     })
     return results
   } else return results
