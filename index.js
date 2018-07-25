@@ -119,14 +119,17 @@ function validConfiguration (configuration) {
     // Validate `license` property.
     configuration.hasOwnProperty('license') &&
     isString(configuration.license) &&
-    configuration.license.length > 0 &&
-    // Validate `whitelist` property.
-    configuration.hasOwnProperty('whitelist') &&
-    isObject(configuration.whitelist) &&
-    Object.keys(configuration.whitelist)
-      .every(function (key) {
-        return isString(configuration.whitelist[key])
-      })
+    configuration.license.length > 0 && (
+      configuration.hasOwnProperty('whitelist')
+        ? (
+          // Validate `whitelist` property.
+          isObject(configuration.whitelist) &&
+          Object.keys(configuration.whitelist)
+            .every(function (key) {
+              return isString(configuration.whitelist[key])
+            })
+        ) : true
+    )
   )
 }
 
@@ -168,7 +171,7 @@ function appearsIn (installed, dependencies) {
 
 function resultForPackage (configuration, tree) {
   var licenseExpression = configuration.license
-  var whitelist = configuration.whitelist
+  var whitelist = configuration.whitelist || {}
   var result = {
     name: tree.package.name,
     license: tree.package.license,
