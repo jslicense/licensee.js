@@ -3,6 +3,9 @@
   "description": "check dependency licenses against rules",
   "version": "4.5.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
+  "contributors": [
+    "Jakob Krigovsky <jakob@krigovsky.com>"
+  ],
   "dependencies": {
     "docopt": "^0.6.2",
     "fs-access": "^1.0.0",
