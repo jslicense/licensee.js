@@ -11,7 +11,7 @@
     "fs-access": "^1.0.0",
     "json-parse-errback": "^2.0.1",
     "read-package-tree": "^5.2.1",
-    "run-parallel": "^1.1.6",
+    "run-parallel": "^1.1.9",
     "semver": "^5.1.0",
     "simple-concat": "^1.0.0",
     "spdx-expression-validate": "^1.0.1",
