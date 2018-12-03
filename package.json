@@ -25,7 +25,7 @@
     "licensee"
   ],
   "devDependencies": {
-    "spawn-sync": "^1.0.15",
+    "spawn-sync": "^2.0.0",
     "standard": "^11.0.1",
     "tap": "^12.1.0"
   },
