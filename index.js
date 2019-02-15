@@ -1,6 +1,7 @@
 module.exports = licensee
 
 var licenseSatisfies = require('spdx-satisfies')
+var npmLicenseCorrections = require('npm-license-corrections')
 var parseJSON = require('json-parse-errback')
 var readPackageTree = require('read-package-tree')
 var runParallel = require('run-parallel')
@@ -183,23 +184,39 @@ function resultForPackage (configuration, tree) {
     parent: tree.parent,
     path: tree.path
   }
+  // Find and apply any license metadata correction.
+  var correction = (
+    configuration.corrections &&
+    npmLicenseCorrections.find(function (correction) {
+      return (
+        correction.name === result.name &&
+        correction.version === result.version
+      )
+    })
+  )
+  if (correction) {
+    result.license = correction.license
+    result.corrected = true
+  }
+  // Check if whitelisted.
   var whitelisted = Object.keys(whitelist).some(function (name) {
     return (
-      tree.package.name === name &&
-      satisfies(tree.package.version, whitelist[name]) === true
+      result.name === name &&
+      satisfies(result.version, whitelist[name]) === true
     )
   })
   if (whitelisted) {
     result.approved = true
     result.whitelisted = true
   } else {
+    // Check against licensing rule.
     var matchesRule = (
       licenseExpression &&
       validSPDX(licenseExpression) &&
-      tree.package.license &&
-      typeof tree.package.license === 'string' &&
-      validSPDX(tree.package.license) &&
-      licenseSatisfies(tree.package.license, licenseExpression)
+      result.license &&
+      typeof result.license === 'string' &&
+      validSPDX(result.license) &&
+      licenseSatisfies(result.license, licenseExpression)
     )
     if (matchesRule) {
       result.approved = true
