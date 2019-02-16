@@ -214,6 +214,36 @@ function resultForPackage (configuration, tree) {
     result.license = correction.license
     result.corrected = true
   }
+
+  // Check if ignored.
+  var ignore = configuration.ignore
+  if (ignore && Array.isArray(ignore)) {
+    var ignored = ignore.some(function (ignore) {
+      if (typeof ignore !== 'object') return false
+      if (
+        ignore.prefix &&
+        typeof ignore.prefix === 'string' &&
+        startsWith(result.name, ignore.prefix)
+      ) return true
+      if (
+        ignore.scope &&
+        typeof ignore.scope === 'string' &&
+        startsWith(result.name, '@' + ignore.scope + '/')
+      ) return true
+      if (
+        ignore.author &&
+        typeof ignore.author === 'string' &&
+        personMatches(result.author, ignore.author)
+      ) return true
+      return false
+    })
+    if (ignored) {
+      result.approved = true
+      result.ignored = ignored
+      return result
+    }
+  }
+
   // Check if whitelisted.
   var whitelisted = Object.keys(whitelist).some(function (name) {
     return (
@@ -224,22 +254,52 @@ function resultForPackage (configuration, tree) {
   if (whitelisted) {
     result.approved = true
     result.whitelisted = true
+    return result
+  }
+
+  // Check against licensing rule.
+  var matchesRule = (
+    licenseExpression &&
+    validSPDX(licenseExpression) &&
+    result.license &&
+    typeof result.license === 'string' &&
+    validSPDX(result.license) &&
+    licenseSatisfies(result.license, licenseExpression)
+  )
+  if (matchesRule) {
+    result.approved = true
+    result.rule = true
   } else {
-    // Check against licensing rule.
-    var matchesRule = (
-      licenseExpression &&
-      validSPDX(licenseExpression) &&
-      result.license &&
-      typeof result.license === 'string' &&
-      validSPDX(result.license) &&
-      licenseSatisfies(result.license, licenseExpression)
-    )
-    if (matchesRule) {
-      result.approved = true
-      result.rule = true
-    } else {
-      result.approved = false
-    }
+    result.approved = false
   }
   return result
+}
+
+function startsWith (string, prefix) {
+  return string.toLowerCase().indexOf(prefix.toLowerCase()) === 0
+}
+
+function personMatches (person, string) {
+  if (!person) return false
+  if (typeof person === 'string') {
+    return contains(person, string)
+  }
+  if (typeof person === 'object') {
+    if (matches('name')) return true
+    if (matches('email')) return true
+    if (matches('url')) return true
+  }
+  return false
+
+  function matches (key) {
+    return (
+      person[key] &&
+      typeof person[key] === 'string' &&
+      contains(person[key], string)
+    )
+  }
+}
+
+function contains (string, substring) {
+  return string.toLowerCase().indexOf(substring.toLowerCase()) !== -1
 }

@@ -1,0 +1,7 @@
+{
+  "name": "optimist",
+  "dependencies": {
+    "kearray-get": "1.0.0"
+  },
+  "private": true
+}
