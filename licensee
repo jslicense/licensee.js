@@ -14,6 +14,7 @@ var USAGE = [
   '',
   'Options:',
   '  --init                Create a .licensee.json file.',
+  '  --corrections         Use crowdsourced license metadata corrections.',
   '  --license EXPRESSION  Permit licenses matching SPDX expression.',
   '  --whitelist LIST      Permit comma-delimited name@range.',
   '  --errors-only         Only show NOT APPROVED packages.',
@@ -44,7 +45,8 @@ if (options['--init']) {
         options['--whitelist']
           ? parseWhitelist(options['--whitelist'])
           : {optimist: '<=0.6.1'}
-      )
+      ),
+      corrections: false
     }, null, 2) + '\n',
     {
       encoding: 'utf8',
@@ -68,7 +70,8 @@ if (options['--init']) {
     license: options['--license'] || undefined,
     whitelist: options['--whitelist']
       ? parseWhitelist(options['--whitelist'])
-      : {}
+      : {},
+    corrections: options['--corrections']
   }
   checkDependencies()
 } else {
@@ -101,6 +104,7 @@ if (options['--init']) {
 
 function checkDependencies () {
   configuration.productionOnly = options['--production']
+  configuration.corrections = configuration.corrections || options['--corrections']
   require('./')(configuration, cwd, function (error, dependencies) {
     if (error) {
       die(error.message + '\n')
