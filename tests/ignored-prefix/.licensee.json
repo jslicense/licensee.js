@@ -1,0 +1,9 @@
+{
+  "license": "Apache-2.0",
+  "whitelist": {},
+  "ignore": [
+    {
+      "prefix": "doc"
+    }
+  ]
+}

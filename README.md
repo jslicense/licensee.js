@@ -15,7 +15,13 @@ file at the root of your package, like so:
   "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)",
   "whitelist": {
     "optimist": "<=0.6.1"
-  }
+  },
+  "corrections": false,
+  "ignore": [
+    {"scope": "kemitchell"},
+    {"prefix": "commonform-"},
+    {"author": "Kyle E. Mitchell"}
+  ]
 }
 ```
 
@@ -34,6 +40,27 @@ described in `whitelist` will not cause an error.
 
 [metadata]: https://docs.npmjs.com/files/package.json#license
 [semver]: https://www.npmjs.com/package/semver
+
+The `corrections` flag toggles community corrections to npm package
+license metadata.  When enabled, `licensee` will check `license` and
+`whitelist` against `license` values from [npm-license-corrections]
+when available.
+
+[npm-license-corrections]: https://www.npmjs.com/package/npm-license-corrections
+
+The optional `ignore` array instructs `licensee` to approve packages
+without considering their `license` metadata.  Ignore rules can take
+one of three forms:
+
+1.  `{"scope":"x"}` ignores all packages in scope `x`, like `@x/y`.
+
+2.  `{"prefix":"x"}` ignores all packages whose names start with `x`,
+    but not scoped packages whose scopes do not match, like `@y/x`.
+
+3.  `{"author":"x"}` ignores all packages whose authors' names,
+    e-mail addresses, or URLs contain `x`.
+
+All ignore rules are case-insensitive.
 
 # Use
 
