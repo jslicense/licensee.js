@@ -33,7 +33,7 @@
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
-    "style": "standard",
+    "style": "standard index.js",
     "test": "tap tests/**/test.js"
   }
 }
