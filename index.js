@@ -149,7 +149,23 @@ function findIssues (configuration, children, dependencies, results) {
         !configuration.productionOnly ||
         appearsIn(child, dependencies)
       ) {
-        results.push(resultForPackage(configuration, child))
+        var result = resultForPackage(configuration, child)
+        // Deduplicate.
+        var existing = results.find(function (existing) {
+          return (
+            existing.name === result.name &&
+            existing.version === result.version
+          )
+        })
+        if (existing) {
+          if (existing.duplicates) {
+            existing.duplicates.push(result)
+          } else {
+            existing.duplicates = [result]
+          }
+        } else {
+          results.push(result)
+        }
         findIssues(configuration, child, dependencies, results)
       }
       if (child.children) {
