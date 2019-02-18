@@ -44,9 +44,13 @@ described in `whitelist` will not cause an error.
 The `corrections` flag toggles community corrections to npm package
 license metadata.  When enabled, `licensee` will check `license` and
 `whitelist` against `license` values from [npm-license-corrections]
-when available.
+when available, and also use [correct-license-metadata] to try to
+correct old-style `licenses` arrays and other unambiguous, but
+invalid, metadata.
 
 [npm-license-corrections]: https://www.npmjs.com/package/npm-license-corrections
+
+[correct-license-metadata]: https://www.npmjs.com/package/correct-license-metadata
 
 The optional `ignore` array instructs `licensee` to approve packages
 without considering their `license` metadata.  Ignore rules can take
