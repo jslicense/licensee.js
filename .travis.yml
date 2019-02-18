@@ -4,4 +4,5 @@ node_js: [ "4", "5", "6", "7", "8", "9", "10", "node" ]
 script:
   - "npm run test"
   - "npm run style"
+  - "npm run licenses"
 sudo: false
