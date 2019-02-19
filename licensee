@@ -156,6 +156,15 @@ function toText (result) {
       : '  NOT APPROVED\n'
     ) +
     '  Terms: ' + displayLicense(result.license) + '\n' +
+    (
+        result.corrected
+        ? (
+          result.corrected === 'automatic'
+            ? '  Corrected: correct-license-metadata\n'
+            : '  Corrected: npm-license-corrections\n'
+        )
+        : ''
+    ) +
     '  Repository: ' + formatRepo(result.repository) + '\n' +
     '  Homepage: ' + formatRepo(result.homepage) + '\n' +
     '  Author: ' + formatPerson(result.author) + '\n' +

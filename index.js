@@ -1,5 +1,6 @@
 module.exports = licensee
 
+var correctLicenseMetadata = require('correct-license-metadata')
 var licenseSatisfies = require('spdx-satisfies')
 var npmLicenseCorrections = require('npm-license-corrections')
 var parseJSON = require('json-parse-errback')
@@ -200,8 +201,9 @@ function resultForPackage (configuration, tree) {
     parent: tree.parent,
     path: tree.path
   }
-  // Find and apply any license metadata correction.
-  var correction = (
+
+  // Find and apply any manual license metadata correction.
+  var manualCorrection = (
     configuration.corrections &&
     npmLicenseCorrections.find(function (correction) {
       return (
@@ -210,9 +212,19 @@ function resultForPackage (configuration, tree) {
       )
     })
   )
-  if (correction) {
-    result.license = correction.license
-    result.corrected = true
+  if (manualCorrection) {
+    result.license = manualCorrection.license
+    result.corrected = 'manual'
+  }
+
+  // Find and apply any automatic license metadata correction.
+  var automaticCorrection = (
+    configuration.corrections &&
+    correctLicenseMetadata(tree.package)
+  )
+  if (automaticCorrection) {
+    result.license = automaticCorrection
+    result.corrected = 'automatic'
   }
 
   // Check if ignored.

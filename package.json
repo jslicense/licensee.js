@@ -7,6 +7,7 @@
     "Jakob Krigovsky <jakob@krigovsky.com>"
   ],
   "dependencies": {
+    "correct-license-metadata": "^1.0.1",
     "docopt": "^0.6.2",
     "fs-access": "^2.0.0",
     "json-parse-errback": "^2.0.1",
@@ -33,6 +34,7 @@
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
+    "licenses": "./licensee --errors-only",
     "style": "standard index.js",
     "test": "tap tests/**/test.js"
   }
