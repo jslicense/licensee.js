@@ -33,6 +33,18 @@ according to [spdx-satisfies][satisfies] will not cause an error.
 [parse]: https://www.npmjs.com/package/spdx-expression-parse
 [satisfies]: https://www.npmjs.com/package/spdx-satisfies
 
+Instead of a `license` property, you can specify a minimum
+Blue Oak Council [license rating]---lead, bronze, silver, or
+gold---from which `licensee` will generate a rule:
+
+[license rating]: https://blueoakcouncil.org/license
+
+```json
+{
+  "blueOak": "bronze"
+}
+```
+
 The `whitelist` is a map from package name to a [node-semver][semver]
 Semantic Versioning range. Packages whose license metadata don't match
 the SPDX license expression in `license` but have a name and version
