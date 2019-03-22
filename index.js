@@ -1,5 +1,6 @@
 module.exports = licensee
 
+var blueOakList = require('@blueoak/list')
 var correctLicenseMetadata = require('correct-license-metadata')
 var licenseSatisfies = require('spdx-satisfies')
 var npmLicenseCorrections = require('npm-license-corrections')
@@ -13,8 +14,15 @@ var validSPDX = require('spdx-expression-validate')
 
 function licensee (configuration, path, callback) {
   if (!validConfiguration(configuration)) {
-    callback(new Error('Invalid configuration'))
-  } else if (!validSPDX(configuration.license)) {
+    return callback(new Error('Invalid configuration'))
+  }
+  if (configuration.license) {
+    configuration.rule = configuration.license
+  } else {
+    configuration.rule = licenseRuleFromBlueOak(configuration.blueOak)
+  }
+  if (!validSPDX(configuration.rule)) {
+    console.log(configuration.rule)
     callback(new Error('Invalid license expression'))
   } else {
     if (configuration.productionOnly) {
@@ -118,21 +126,39 @@ function flattenDependencyTree (graph, object) {
 function validConfiguration (configuration) {
   return (
     isObject(configuration) &&
-    // Validate `license` property.
-    configuration.hasOwnProperty('license') &&
-    isString(configuration.license) &&
-    configuration.license.length > 0 && (
-      configuration.hasOwnProperty('whitelist')
-        ? (
-          // Validate `whitelist` property.
-          isObject(configuration.whitelist) &&
-          Object.keys(configuration.whitelist)
-            .every(function (key) {
-              return isString(configuration.whitelist[key])
-            })
-        ) : true
-    )
+    XOR(
+      configuration.license,
+      configuration.blueOak
+    ),
+    XOR(
+      ( // Validate `license` property.
+        configuration.hasOwnProperty('license') &&
+        isString(configuration.license) &&
+        configuration.license.length > 0
+      ),
+      ( // Validate Blue Oak rating.
+        configuration.hasOwnProperty('blueOak') &&
+        isString(configuration.blueOak) &&
+        configuration.blueOak.length > 0 &&
+        blueOakList.some(function (element) {
+          return element.name === configuration.blueOak.toLowerCase()
+        })
+      )
+    ) &&
+    configuration.hasOwnProperty('whitelist')
+      ? (
+        // Validate `whitelist` property.
+        isObject(configuration.whitelist) &&
+        Object.keys(configuration.whitelist)
+          .every(function (key) {
+            return isString(configuration.whitelist[key])
+          })
+      ) : true
   )
+}
+
+function XOR (a, b) {
+  return (a || b) && !(a && b)
 }
 
 function isObject (argument) {
@@ -188,7 +214,7 @@ function appearsIn (installed, dependencies) {
 }
 
 function resultForPackage (configuration, tree) {
-  var licenseExpression = configuration.license
+  var rule = configuration.rule
   var whitelist = configuration.whitelist || {}
   var result = {
     name: tree.package.name,
@@ -271,12 +297,12 @@ function resultForPackage (configuration, tree) {
 
   // Check against licensing rule.
   var matchesRule = (
-    licenseExpression &&
-    validSPDX(licenseExpression) &&
+    rule &&
+    validSPDX(rule) &&
     result.license &&
     typeof result.license === 'string' &&
     validSPDX(result.license) &&
-    licenseSatisfies(result.license, licenseExpression)
+    licenseSatisfies(result.license, rule)
   )
   if (matchesRule) {
     result.approved = true
@@ -314,4 +340,18 @@ function personMatches (person, string) {
 
 function contains (string, substring) {
   return string.toLowerCase().indexOf(substring.toLowerCase()) !== -1
+}
+
+function licenseRuleFromBlueOak (rating) {
+  rating = rating.toLowerCase()
+  var ids = []
+  for (var index = 0; index < blueOakList.length; index++) {
+    var element = blueOakList[index]
+    if (element.name.toLowerCase() === 'model') continue
+    element.licenses.forEach(function (license) {
+      if (validSPDX(license.id)) ids.push(license.id)
+    })
+    if (rating === element.name) break
+  }
+  return '(' + ids.join(' OR ') + ')'
 }

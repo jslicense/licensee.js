@@ -10,12 +10,13 @@ var USAGE = [
   '',
   'Usage:',
   '  licensee [options]',
-  '  licensee --license=EXPRESSION [--whitelist=LIST] [options]',
+  '  licensee (--license=EXPRESSION | --blueoak=RATING) [--whitelist=LIST] [options]',
   '',
   'Options:',
   '  --init                Create a .licensee.json file.',
   '  --corrections         Use crowdsourced license metadata corrections.',
   '  --license EXPRESSION  Permit licenses matching SPDX expression.',
+  '  --blueoak=RATING      Permit licenses by Blue Oak Council rating.',
   '  --whitelist LIST      Permit comma-delimited name@range.',
   '  --errors-only         Only show NOT APPROVED packages.',
   '  --production          Do not check devDependencies.',
@@ -65,9 +66,10 @@ if (options['--init']) {
       }
     }
   )
-} else if (options['--license'] || options['--whitelist']) {
+} else if (options['--license'] || options['--blueoak'] || options['--whitelist']) {
   configuration = {
     license: options['--license'] || undefined,
+    blueOak: options['--blueoak'] || undefined,
     whitelist: options['--whitelist']
       ? parseWhitelist(options['--whitelist'])
       : {},
