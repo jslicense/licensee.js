@@ -196,6 +196,9 @@ function resultForPackage (configuration, tree) {
     .reduce(function (whitelist, element) {
       try {
         var parsed = parse(element)
+        if (parsed.hasOwnProperty('conjunction')) {
+          throw new Error('Cannot match against "' + JSON.stringify(element) + '".')
+        }
         return whitelist.concat(parsed)
       } catch (e) {
         return whitelist
