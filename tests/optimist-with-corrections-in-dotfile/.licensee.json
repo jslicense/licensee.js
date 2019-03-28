@@ -1,5 +1,9 @@
 {
-  "license": "MIT",
-  "whitelist": {},
+  "licenses": {
+    "spdx": [
+      "MIT"
+    ]
+  },
+  "packages": {},
   "corrections": true
 }

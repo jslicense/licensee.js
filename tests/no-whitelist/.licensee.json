@@ -1,3 +1,7 @@
 {
-  "license": "MIT"
+  "licenses": {
+    "spdx": [
+      "MIT"
+    ]
+  }
 }

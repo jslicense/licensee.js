@@ -1,4 +1,8 @@
 {
-  "license": "Apache-2.0",
-  "whitelist": {}
+  "licenses": {
+    "spdx": [
+      "Apache-2.0"
+    ]
+  },
+  "packages": {}
 }

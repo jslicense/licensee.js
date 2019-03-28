@@ -1,4 +1,9 @@
 {
-  "license": "(Apache-2.0 OR MIT)",
-  "whitelist": {}
+  "licenses": {
+    "spdx": [
+      "Apache-2.0",
+      "MIT"
+    ]
+  },
+  "packages": {}
 }

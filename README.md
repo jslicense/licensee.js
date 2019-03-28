@@ -12,8 +12,15 @@ file at the root of your package, like so:
 
 ```json
 {
-  "license": "(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)",
-  "whitelist": {
+  "licenses": {
+    "spdx": [
+      "MIT",
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "Apache-2.0"
+    ]
+  },
+  "packages": {
     "optimist": "<=0.6.1"
   },
   "corrections": false,
@@ -25,38 +32,67 @@ file at the root of your package, like so:
 }
 ```
 
-The `license` property is an SPDX license expression that
-[spdx-expression-parse][parse] can parse. Any package with [standard
-license metadata][metadata] that satisfies the SPDX license expression
-according to [spdx-satisfies][satisfies] will not cause an error.
+The `licenses` object adds licenses to a whitelist.
+Any package with [standard license metadata][metadata]
+that satisfies that whitelist according to
+[spdx-whitelisted][whitelisted] will not cause an error.
 
 [parse]: https://www.npmjs.com/package/spdx-expression-parse
-[satisfies]: https://www.npmjs.com/package/spdx-satisfies
+[whitelisted]: https://www.npmjs.com/package/spdx-whitelisted
 
-Instead of a `license` property, you can specify a minimum
-Blue Oak Council [license rating]---lead, bronze, silver, or
-gold---from which `licensee` will generate a rule:
+Instead of whitelisting each license by SPDX identifier,
+you can whitelist categories of licenses.
+
+You can specify a minimum Blue Oak Council [license
+rating]---lead, bronze, silver, or gold---like so:
 
 [license rating]: https://blueoakcouncil.org/license
 
 ```json
 {
-  "blueOak": "bronze"
+  "licenses": {
+    "blueOak": "bronze"
+  }
 }
 ```
 
-The `whitelist` is a map from package name to a [node-semver][semver]
-Semantic Versioning range. Packages whose license metadata don't match
-the SPDX license expression in `license` but have a name and version
-described in `whitelist` will not cause an error.
+You can also whitelist all [OSI]-approved licenses:
+
+[osi]: https://opensource.org
+
+```json
+{
+  "licenses": {
+    "osi": true
+  }
+}
+```
+
+All of these can be combined:
+
+```json
+{
+  "licenses": {
+    "spdx": ["CC-BY-4.0"],
+    "blueOak": "gold",
+    "osi": true
+  }
+}
+```
+
+The `packages` property is a map from package name to a
+[node-semver][semver] Semantic Versioning range.  Packages whose
+license metadata don't match the SPDX license expression in
+`licenses` but have a name and version described in `packages`
+will not cause an error.
 
 [metadata]: https://docs.npmjs.com/files/package.json#license
 [semver]: https://www.npmjs.com/package/semver
 
-The `corrections` flag toggles community corrections to npm package
-license metadata.  When enabled, `licensee` will check `license` and
-`whitelist` against `license` values from [npm-license-corrections]
-when available, and also use [correct-license-metadata] to try to
+The `corrections` flag toggles community corrections to npm
+package license metadata.  When enabled, `licensee` will check
+against `license` values from [npm-license-corrections] when
+available, and also use [correct-license-metadata] to try to
 correct old-style `licenses` arrays and other unambiguous, but
 invalid, metadata.
 

@@ -1,4 +1,6 @@
 {
-  "blueOak": "bronze",
-  "whitelist": {}
+  "licenses": {
+    "blueOak": "bronze"
+  },
+  "packages": {}
 }

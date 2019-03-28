@@ -1,8 +1,6 @@
 {
   "licenses": {
-    "spdx": [
-      "Apache-2.0"
-    ]
+    "osi": true
   },
   "packages": {}
 }
