@@ -1,7 +1,7 @@
 {
   "name": "licensee",
   "description": "check dependency licenses against rules",
-  "version": "6.2.0",
+  "version": "7.0.0",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "contributors": [
     "Jakob Krigovsky <jakob@krigovsky.com>"
