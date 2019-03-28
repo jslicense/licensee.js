@@ -2,28 +2,27 @@ module.exports = licensee
 
 var blueOakList = require('@blueoak/list')
 var correctLicenseMetadata = require('correct-license-metadata')
-var licenseSatisfies = require('spdx-satisfies')
 var npmLicenseCorrections = require('npm-license-corrections')
+var osi = require('spdx-osi')
+var parse = require('spdx-expression-parse')
 var parseJSON = require('json-parse-errback')
 var readPackageTree = require('read-package-tree')
 var runParallel = require('run-parallel')
 var satisfies = require('semver').satisfies
 var simpleConcat = require('simple-concat')
 var spawn = require('child_process').spawn
-var validSPDX = require('spdx-expression-validate')
+var spdxWhitelisted = require('spdx-whitelisted')
 
 function licensee (configuration, path, callback) {
   if (!validConfiguration(configuration)) {
     return callback(new Error('Invalid configuration'))
   }
-  if (configuration.license) {
-    configuration.rule = configuration.license
-  } else {
-    configuration.rule = licenseRuleFromBlueOak(configuration.blueOak)
-  }
-  if (!validSPDX(configuration.rule)) {
-    console.log(configuration.rule)
-    callback(new Error('Invalid license expression'))
+  configuration.licenses = compileLicenseWhitelist(configuration)
+  if (
+    configuration.licenses.length === 0 &&
+    Object.keys(configuration.packages).length === 0
+  ) {
+    callback(new Error('No licenses or packages whitelisted.'))
   } else {
     if (configuration.productionOnly) {
       // In order to ignore devDependencies, we need to read:
@@ -126,39 +125,18 @@ function flattenDependencyTree (graph, object) {
 function validConfiguration (configuration) {
   return (
     isObject(configuration) &&
-    XOR(
-      configuration.license,
-      configuration.blueOak
-    ),
-    XOR(
-      ( // Validate `license` property.
-        configuration.hasOwnProperty('license') &&
-        isString(configuration.license) &&
-        configuration.license.length > 0
-      ),
-      ( // Validate Blue Oak rating.
-        configuration.hasOwnProperty('blueOak') &&
-        isString(configuration.blueOak) &&
-        configuration.blueOak.length > 0 &&
-        blueOakList.some(function (element) {
-          return element.name === configuration.blueOak.toLowerCase()
-        })
-      )
-    ) &&
-    configuration.hasOwnProperty('whitelist')
+    configuration.hasOwnProperty('licenses') &&
+    isObject(configuration.licenses) &&
+    configuration.hasOwnProperty('packages')
       ? (
-        // Validate `whitelist` property.
-        isObject(configuration.whitelist) &&
-        Object.keys(configuration.whitelist)
+        // Validate `packages` property.
+        isObject(configuration.packages) &&
+        Object.keys(configuration.packages)
           .every(function (key) {
-            return isString(configuration.whitelist[key])
+            return isString(configuration.packages[key])
           })
       ) : true
   )
-}
-
-function XOR (a, b) {
-  return (a || b) && !(a && b)
 }
 
 function isObject (argument) {
@@ -214,8 +192,16 @@ function appearsIn (installed, dependencies) {
 }
 
 function resultForPackage (configuration, tree) {
-  var rule = configuration.rule
-  var whitelist = configuration.whitelist || {}
+  var licenseWhitelist = (configuration.licenses || [])
+    .reduce(function (whitelist, element) {
+      try {
+        var parsed = parse(element)
+        return whitelist.concat(parsed)
+      } catch (e) {
+        return whitelist
+      }
+    }, [])
+  var packageWhitelist = configuration.packages || {}
   var result = {
     name: tree.package.name,
     license: tree.package.license,
@@ -282,34 +268,43 @@ function resultForPackage (configuration, tree) {
     }
   }
 
-  // Check if whitelisted.
-  var whitelisted = Object.keys(whitelist).some(function (name) {
-    return (
-      result.name === name &&
-      satisfies(result.version, whitelist[name]) === true
-    )
-  })
-  if (whitelisted) {
+  result.approved = false
+
+  var packageWhitelisted = Object.keys(packageWhitelist)
+    .some(function (name) {
+      return (
+        result.name === name &&
+        satisfies(result.version, packageWhitelist[name]) === true
+      )
+    })
+  if (packageWhitelisted) {
     result.approved = true
-    result.whitelisted = true
+    result.package = true
     return result
   }
 
-  // Check against licensing rule.
-  var matchesRule = (
-    rule &&
-    validSPDX(rule) &&
-    result.license &&
-    typeof result.license === 'string' &&
-    validSPDX(result.license) &&
-    licenseSatisfies(result.license, rule)
-  )
-  if (matchesRule) {
-    result.approved = true
-    result.rule = true
-  } else {
-    result.approved = false
+  if (!result.license || typeof result.license !== 'string') {
+    return result
   }
+
+  var validSPDX = true
+  var parsed
+  try {
+    parsed = parse(result.license)
+  } catch (e) {
+    validSPDX = false
+  }
+
+  // Check against licensing rule.
+  var licenseWhitelisted = (
+    validSPDX &&
+    spdxWhitelisted(parsed, licenseWhitelist)
+  )
+  if (licenseWhitelisted) {
+    result.approved = true
+    result.license = true
+  }
+
   return result
 }
 
@@ -342,16 +337,38 @@ function contains (string, substring) {
   return string.toLowerCase().indexOf(substring.toLowerCase()) !== -1
 }
 
-function licenseRuleFromBlueOak (rating) {
+function licensesFromBlueOak (rating) {
   rating = rating.toLowerCase()
   var ids = []
   for (var index = 0; index < blueOakList.length; index++) {
     var element = blueOakList[index]
     if (element.name.toLowerCase() === 'model') continue
     element.licenses.forEach(function (license) {
-      if (validSPDX(license.id)) ids.push(license.id)
+      try {
+        parse(license.id)
+        ids.push(license.id)
+      } catch (e) {
+        // pass
+      }
     })
     if (rating === element.name) break
   }
-  return '(' + ids.join(' OR ') + ')'
+  return ids
+}
+
+function compileLicenseWhitelist (configuration) {
+  var licenses = configuration.licenses
+  var whitelist = []
+  var spdx = licenses.spdx
+  if (spdx) pushMissing(spdx, whitelist)
+  var blueOak = licenses.blueOak
+  if (blueOak) pushMissing(licensesFromBlueOak(blueOak), whitelist)
+  if (licenses.osi) pushMissing(osi, whitelist)
+  return whitelist
+}
+
+function pushMissing (source, sink) {
+  source.forEach(function (element) {
+    if (!sink.includes(element)) sink.push(element)
+  })
 }

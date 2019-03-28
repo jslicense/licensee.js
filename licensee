@@ -10,20 +10,20 @@ var USAGE = [
   '',
   'Usage:',
   '  licensee [options]',
-  '  licensee (--license=EXPRESSION | --blueoak=RATING) [--whitelist=LIST] [options]',
   '',
   'Options:',
-  '  --init                Create a .licensee.json file.',
-  '  --corrections         Use crowdsourced license metadata corrections.',
-  '  --license EXPRESSION  Permit licenses matching SPDX expression.',
-  '  --blueoak=RATING      Permit licenses by Blue Oak Council rating.',
-  '  --whitelist LIST      Permit comma-delimited name@range.',
-  '  --errors-only         Only show NOT APPROVED packages.',
-  '  --production          Do not check devDependencies.',
-  '  --ndjson              Print newline-delimited JSON objects.',
-  '  --quiet               Quiet mode, only exit(0/1).',
-  '  -h, --help            Print this screen to standard output.',
-  '  -v, --version         Print version to standard output.'
+  '  --init                  Create a .licensee.json file.',
+  '  --corrections           Use crowdsourced license metadata corrections.',
+  '  --blueoak=RATING        Permit licenses by Blue Oak Council rating.',
+  '  --licenses IDENTIFIERS  Permit licenses matching comma-separated list of SPDX identifiers.',
+  '  --osi                   Permit licenses approved by the Open Source Initiative.',
+  '  --packages LIST         Permit comma-delimited name@range.',
+  '  --errors-only           Only show NOT APPROVED packages.',
+  '  --production            Do not check devDependencies.',
+  '  --ndjson                Print newline-delimited JSON objects.',
+  '  --quiet                 Quiet mode, only exit(0/1).',
+  '  -h, --help              Print this screen to standard output.',
+  '  -v, --version           Print version to standard output.'
 ].join('\n')
 
 var options = docopt.docopt(USAGE, {
@@ -38,13 +38,14 @@ if (options['--init']) {
   fs.writeFile(
     configurationPath,
     JSON.stringify({
-      license: (
-        options['--expression'] ||
-        '(MIT OR BSD-2-Clause OR BSD-3-Clause OR Apache-2.0)'
-      ),
-      whitelist: (
-        options['--whitelist']
-          ? parseWhitelist(options['--whitelist'])
+      licenses: {
+        spdx: [
+          'MIT', 'BSD-2-Clause', 'BSD-3-Clause', 'Apache-2.0'
+        ]
+      },
+      packages: (
+        options['--packages']
+          ? parsePackageWhitelist(options['--packages'])
           : {optimist: '<=0.6.1'}
       ),
       corrections: false
@@ -66,12 +67,20 @@ if (options['--init']) {
       }
     }
   )
-} else if (options['--license'] || options['--blueoak'] || options['--whitelist']) {
+} else if (
+  options['--spdx'] ||
+  options['--osi'] ||
+  options['--blueoak'] ||
+  options['--packages']
+) {
   configuration = {
-    license: options['--license'] || undefined,
-    blueOak: options['--blueoak'] || undefined,
-    whitelist: options['--whitelist']
-      ? parseWhitelist(options['--whitelist'])
+    licenses: {
+      spdx: options['--spdx'] || undefined,
+      blueOak: options['--blueoak'] || undefined,
+      osi: options['--osi'] || undefined
+    },
+    packages: options['--packages']
+      ? parsePackageWhitelist(options['--packages'])
       : {},
     corrections: options['--corrections']
   }
@@ -83,7 +92,7 @@ if (options['--init']) {
         [
           'Cannot read ' + configurationPath + '.',
           'Create ' + configurationPath + ' with licensee --init',
-          'or configure with --license and --whitelist.',
+          'or configure with --spdx, --blueoak, --osi, and --packages.',
           'See licensee --help for more information.'
         ].join('\n')
       )
@@ -153,7 +162,7 @@ function toText (result) {
       result.approved
       ? (
         '  Approved by ' +
-        (result.whitelisted ? 'whitelist' : 'rule') + '\n'
+        (result.license ? 'license' : 'package') + '\n'
       )
       : '  NOT APPROVED\n'
     ) +
@@ -243,7 +252,7 @@ function die (message) {
   process.exit(1)
 }
 
-function parseWhitelist (string) {
+function parsePackageWhitelist (string) {
   return string
     .split(',')
     .map(function (string) {
