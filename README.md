@@ -50,7 +50,9 @@ rating]---lead, bronze, silver, or gold---like so:
 
 ```json
 {
-  "blueOak": "bronze"
+  "licenses": {
+    "blueOak": "bronze"
+  }
 }
 ```
 
@@ -60,7 +62,21 @@ You can also whitelist all [OSI]-approved licenses:
 
 ```json
 {
-  "osi": true
+  "licenses": {
+    "osi": true
+  }
+}
+```
+
+All of these can be combined:
+
+```json
+{
+  "licenses": {
+    "spdx": ["CC-BY-4.0"],
+    "blueOak": "gold",
+    "osi": true
+  }
 }
 ```
 
