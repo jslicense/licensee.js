@@ -54,7 +54,7 @@ rating]---lead, bronze, silver, or gold---like so:
 }
 ```
 
-You can also whitelist all [OSI]-approved licenses with `osi`:
+You can also whitelist all [OSI]-approved licenses:
 
 [osi]: https://opensource.org
 
