@@ -369,6 +369,6 @@ function compileLicenseWhitelist (configuration) {
 
 function pushMissing (source, sink) {
   source.forEach(function (element) {
-    if (!sink.includes(element)) sink.push(element)
+    if (sink.indexOf(element) === -1) sink.push(element)
   })
 }
