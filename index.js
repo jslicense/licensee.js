@@ -353,7 +353,7 @@ function licensesFromBlueOak (rating) {
         // pass
       }
     })
-    if (rating === element.name) break
+    if (rating === element.name.toLowerCase()) break
   }
   return ids
 }
