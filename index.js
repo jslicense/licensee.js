@@ -305,7 +305,6 @@ function resultForPackage (configuration, tree) {
   )
   if (licenseWhitelisted) {
     result.approved = true
-    result.license = true
   }
 
   return result
