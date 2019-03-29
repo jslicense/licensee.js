@@ -183,12 +183,22 @@ function toText (result) {
   )
 }
 
+var outputProperties = [
+  'name',
+  'version',
+  'approved',
+  'license',
+  'corrected',
+  'repository',
+  'homepage',
+  'author',
+  'contributors'
+]
+
 function toJSON (dependency) {
   var returned = {}
-  Object.keys(dependency).forEach(function (key) {
-    if (key !== 'parent') {
-      returned[key] = dependency[key]
-    }
+  outputProperties.forEach(function (key) {
+    returned[key] = dependency[key]
   })
   return JSON.stringify(returned)
 }
