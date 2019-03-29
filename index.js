@@ -18,6 +18,18 @@ function licensee (configuration, path, callback) {
     return callback(new Error('Invalid configuration'))
   }
   configuration.licenses = compileLicenseWhitelist(configuration)
+  configuration.licensesParsed = (configuration.licenses || [])
+    .reduce(function (whitelist, element) {
+      try {
+        var parsed = parse(element)
+        if (parsed.hasOwnProperty('conjunction')) {
+          throw new Error('Cannot match against "' + JSON.stringify(element) + '".')
+        }
+        return whitelist.concat(parsed)
+      } catch (e) {
+        return whitelist
+      }
+    }, [])
   if (
     configuration.licenses.length === 0 &&
     Object.keys(configuration.packages).length === 0
@@ -192,18 +204,6 @@ function appearsIn (installed, dependencies) {
 }
 
 function resultForPackage (configuration, tree) {
-  var licenseWhitelist = (configuration.licenses || [])
-    .reduce(function (whitelist, element) {
-      try {
-        var parsed = parse(element)
-        if (parsed.hasOwnProperty('conjunction')) {
-          throw new Error('Cannot match against "' + JSON.stringify(element) + '".')
-        }
-        return whitelist.concat(parsed)
-      } catch (e) {
-        return whitelist
-      }
-    }, [])
   var packageWhitelist = configuration.packages || {}
   var result = {
     name: tree.package.name,
@@ -298,6 +298,7 @@ function resultForPackage (configuration, tree) {
     validSPDX = false
   }
 
+  var licenseWhitelist = configuration.licensesParsed
   // Check against licensing rule.
   var licenseWhitelisted = (
     validSPDX &&
