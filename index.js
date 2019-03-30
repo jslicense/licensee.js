@@ -54,6 +54,7 @@ function licensee (configuration, path, callback) {
         dependencies: readDependencyList,
         packages: readFilesystemTree
       }, function (error, trees) {
+        /* istanbul ignore if */
         if (error) callback(error)
         else withTrees(trees.packages, trees.dependencies)
       })
@@ -63,6 +64,7 @@ function licensee (configuration, path, callback) {
       // or not, just read `node_modules`.  We don't need
       // the dependency graph.
       readFilesystemTree(function (error, packages) {
+        /* istanbul ignore if */
         if (error) callback(error)
         else withTrees(packages, false)
       })
@@ -92,6 +94,7 @@ function licensee (configuration, path, callback) {
         done(outputError)
       } else {
         parseJSON(json, function (error, graph) {
+          /* istanbul ignore if */
           if (error) return done(error)
           if (!graph.hasOwnProperty('dependencies')) {
             done(new Error('cannot interpret npm ls --json output'))
@@ -107,6 +110,7 @@ function licensee (configuration, path, callback) {
 
   function readFilesystemTree (done) {
     readPackageTree(path, function (error, tree) {
+      /* istanbul ignore if */
       if (error) return done(error)
       done(null, tree.children)
     })
