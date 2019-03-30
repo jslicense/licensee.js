@@ -42,5 +42,12 @@
     "style": "standard index.js",
     "test": "tap tests/**/test.js",
     "coverage": "nyc tap tests/**/test.js"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ]
   }
 }
