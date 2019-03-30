@@ -45,6 +45,9 @@
   },
   "nyc": {
     "check-coverage": true,
+    "exclude": [
+      "tests"
+    ],
     "reporter": [
       "lcov",
       "text-summary"
