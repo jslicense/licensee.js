@@ -13,7 +13,7 @@ var simpleConcat = require('simple-concat')
 var spawn = require('child_process').spawn
 var spdxWhitelisted = require('spdx-whitelisted')
 
-function licensee (configuration, path, callback) {
+function licensee    (configuration, path, callback) {
   if (!validConfiguration(configuration)) {
     return callback(new Error('Invalid configuration'))
   }
