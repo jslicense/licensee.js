@@ -46,7 +46,7 @@ if (options['--init']) {
       packages: (
         options['--packages']
           ? parsePackageWhitelist(options['--packages'])
-          : {optimist: '<=0.6.1'}
+          : { optimist: '<=0.6.1' }
       ),
       corrections: false
     }, null, 2) + '\n',
@@ -160,15 +160,15 @@ function toText (result) {
     result.name + '@' + result.version + '\n' +
     (
       result.approved
-      ? (
-        '  Approved by ' +
+        ? (
+          '  Approved by ' +
         (result.license ? 'license' : 'package') + '\n'
-      )
-      : '  NOT APPROVED\n'
+        )
+        : '  NOT APPROVED\n'
     ) +
     '  Terms: ' + displayLicense(result.license) + '\n' +
     (
-        result.corrected
+      result.corrected
         ? (
           result.corrected === 'automatic'
             ? '  Corrected: correct-license-metadata\n'
