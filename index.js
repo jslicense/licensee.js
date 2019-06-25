@@ -87,7 +87,7 @@ function licensee (configuration, path, callback) {
       else json = buffer
     })
     child.once('error', function (error) {
-      outputError = error;
+      outputError = error
     })
     child.once('close', function (code) {
       if (code !== 0) {
