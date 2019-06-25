@@ -38,7 +38,7 @@
   "repository": "jslicense/licensee.js",
   "scripts": {
     "licenses": "./licensee --errors-only",
-    "style": "standard index.js",
+    "lint": "standard index.js",
     "test": "tap tests/**/test.js"
   }
 }
