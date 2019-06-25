@@ -76,8 +76,9 @@ function licensee (configuration, path, callback) {
   }
 
   function readDependencyList (done) {
+    var executable = process.platform === 'win32' ? 'npm.cmd' : 'npm'
     var child = spawn(
-      'npm', ['ls', '--production', '--json'], { cwd: path }
+      executable, ['ls', '--production', '--json'], { cwd: path }
     )
     var outputError
     var json
