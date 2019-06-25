@@ -86,6 +86,9 @@ function licensee (configuration, path, callback) {
       if (error) outputError = error
       else json = buffer
     })
+    child.once('error', function (error) {
+      outputError = error;
+    })
     child.once('close', function (code) {
       if (code !== 0) {
         done(new Error('npm exited with status ' + code))
