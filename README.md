@@ -46,7 +46,7 @@ you can whitelist categories of licenses.
 You can specify a minimum Blue Oak Council [license
 rating]---lead, bronze, silver, or gold---like so:
 
-[license rating]: https://blueoakcouncil.org/license
+[license rating]: https://blueoakcouncil.org/list
 
 ```json
 {
