@@ -349,7 +349,6 @@ function licensesFromBlueOak (rating) {
   var ids = []
   for (var index = 0; index < blueOakList.length; index++) {
     var element = blueOakList[index]
-    if (element.name.toLowerCase() === 'model') continue
     element.licenses.forEach(function (license) {
       try {
         parse(license.id)
