@@ -2,6 +2,7 @@ module.exports = licensee
 
 var blueOakList = require('@blueoak/list')
 var correctLicenseMetadata = require('correct-license-metadata')
+var has = require('has')
 var npmLicenseCorrections = require('npm-license-corrections')
 var osi = require('spdx-osi')
 var parse = require('spdx-expression-parse')
@@ -22,7 +23,7 @@ function licensee (configuration, path, callback) {
     .reduce(function (whitelist, element) {
       try {
         var parsed = parse(element)
-        if (parsed.hasOwnProperty('conjunction')) {
+        if (has(parsed, 'conjunction')) {
           throw new Error('Cannot match against "' + JSON.stringify(element) + '".')
         }
         return whitelist.concat(parsed)
@@ -97,7 +98,7 @@ function licensee (configuration, path, callback) {
       } else {
         parseJSON(json, function (error, graph) {
           if (error) return done(error)
-          if (!graph.hasOwnProperty('dependencies')) {
+          if (!has(graph, 'dependencies')) {
             done(new Error('cannot interpret npm ls --json output'))
           } else {
             var flattened = {}
@@ -125,14 +126,14 @@ function flattenDependencyTree (graph, object) {
     var version = node.version
     var key = KEY_PREFIX + name
     if (
-      object.hasOwnProperty(key) &&
+      has(object, key) &&
       object[key].indexOf(version) === -1
     ) {
       object[key].push(version)
     } else {
       object[key] = [version]
     }
-    if (node.hasOwnProperty('dependencies')) {
+    if (has(node, 'dependencies')) {
       flattenDependencyTree(node.dependencies, object)
     }
   })
@@ -141,9 +142,9 @@ function flattenDependencyTree (graph, object) {
 function validConfiguration (configuration) {
   return (
     isObject(configuration) &&
-    configuration.hasOwnProperty('licenses') &&
+    has(configuration, 'licenses') &&
     isObject(configuration.licenses) &&
-    configuration.hasOwnProperty('packages')
+    has(configuration, 'packages')
       ? (
         // Validate `packages` property.
         isObject(configuration.packages) &&
@@ -202,7 +203,7 @@ function appearsIn (installed, dependencies) {
   var key = KEY_PREFIX + name
   var version = installed.package.version
   return (
-    dependencies.hasOwnProperty(key) &&
+    has(dependencies, key) &&
     dependencies[key].indexOf(version) !== -1
   )
 }
