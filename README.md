@@ -1,6 +1,8 @@
+# licensee
+
 Check npm package dependency license metadata against rules.
 
-# Configuration
+## Configuration
 
 Licensee accepts two kinds of configuration:
 
@@ -114,7 +116,7 @@ one of three forms:
 
 All ignore rules are case-insensitive.
 
-# Use
+## Use
 
 To install and use `licensee` globally:
 
@@ -199,7 +201,7 @@ Alternatively, for a readout of just packages without approved licenses:
 }
 ```
 
-# JavaScript Module
+## JavaScript Module
 
 The package exports an asynchronous function of three arguments:
 
