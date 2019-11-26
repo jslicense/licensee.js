@@ -32,13 +32,14 @@
   ],
   "devDependencies": {
     "spawn-sync": "^2.0.0",
+    "standard": "^14.3.1",
     "tap": "^14.5.0"
   },
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
     "licenses": "./licensee --errors-only",
-    "lint": "npx standard index.js licensee",
+    "lint": "standard",
     "test": "tap tests/**/test.js"
   }
 }
