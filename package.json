@@ -26,7 +26,6 @@
   "bin": "./licensee",
   "files": [
     "LICENSE",
-    "NOTICE",
     "index.js",
     "licensee"
   ],
