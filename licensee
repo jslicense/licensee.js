@@ -2,6 +2,7 @@
 var access = require('fs-access')
 var docopt = require('docopt')
 var fs = require('fs')
+var has = require('has')
 var path = require('path')
 var validSPDX = require('spdx-expression-validate')
 
@@ -249,7 +250,7 @@ function formatRepo (repo) {
   if (repo) {
     if (typeof repo === 'string') {
       return repo
-    } else if (repo.hasOwnProperty('url')) {
+    } else if (has(repo, 'url')) {
       return repo.url
     }
   } else {
