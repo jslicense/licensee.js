@@ -1,6 +1,6 @@
 {
   "private": true,
   "dependencies": {
-    "has-licenses-array": "0.0.0"
+    "async": "0.1.0"
   }
 }
