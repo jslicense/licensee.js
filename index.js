@@ -33,7 +33,7 @@ function licensee (configuration, path, callback) {
     }, [])
   if (
     configuration.licenses.length === 0 &&
-    Object.keys(configuration.packages).length === 0
+    (!configuration.packages || Object.keys(configuration.packages).length === 0)
   ) {
     callback(new Error('No licenses or packages whitelisted.'))
   } else {
