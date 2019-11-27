@@ -4,7 +4,8 @@
   "version": "7.0.3",
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "contributors": [
-    "Jakob Krigovsky <jakob@krigovsky.com>"
+    "Jakob Krigovsky <jakob@krigovsky.com>",
+    "Brett Zamir <brett@brett-zamir.name>"
   ],
   "dependencies": {
     "@blueoak/list": "^1.0.2",
