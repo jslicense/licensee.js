@@ -157,7 +157,7 @@ function validConfiguration (configuration) {
 }
 
 function isObject (argument) {
-  return typeof argument === 'object'
+  return argument && typeof argument === 'object'
 }
 
 function isString (argument) {
