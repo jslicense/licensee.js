@@ -45,7 +45,7 @@ that satisfies that whitelist according to
 Instead of whitelisting each license by SPDX identifier,
 you can whitelist categories of licenses.
 
-You can specify a minimum Blue Oak Council [license
+For example, you can specify a minimum Blue Oak Council [license
 rating]---lead, bronze, silver, or gold---like so:
 
 [license rating]: https://blueoakcouncil.org/list
@@ -58,26 +58,13 @@ rating]---lead, bronze, silver, or gold---like so:
 }
 ```
 
-You can also whitelist all [OSI]-approved licenses:
-
-[osi]: https://opensource.org
-
-```json
-{
-  "licenses": {
-    "osi": true
-  }
-}
-```
-
-All of these can be combined:
+You can combine categories and specific license identifiers, too:
 
 ```json
 {
   "licenses": {
     "spdx": ["CC-BY-4.0"],
-    "blueOak": "gold",
-    "osi": true
+    "blueOak": "gold"
   }
 }
 ```
