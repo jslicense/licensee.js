@@ -136,6 +136,17 @@ Consider adding `licensee` to your npm scripts:
 }
 ```
 
+To check only production dependencies, ignoring development dependencies,
+use `--production` flag:
+
+```json
+{
+  "scripts": {
+    "posttest": "licensee --production"
+  }
+}
+```
+
 For output as newline-delimited JSON objects, for further processing:
 
 ```json
