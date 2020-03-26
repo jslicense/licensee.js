@@ -91,7 +91,7 @@ function licensee (configuration, path, callback) {
       outputError = error
     })
     child.once('close', function (code) {
-      if (code !== 0) {
+      if (!configuration.disableLsErrorAborting && code !== 0) {
         done(new Error('npm exited with status ' + code))
       } else if (outputError) {
         done(outputError)

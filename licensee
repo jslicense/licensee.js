@@ -20,6 +20,7 @@ var USAGE = [
   '  --osi                   Permit licenses approved by the Open Source Initiative.',
   '  --packages LIST         Permit comma-delimited name@range.',
   '  --errors-only           Only show NOT APPROVED packages.',
+  '  --disable-ls-error-aborting  Disables aborting upon `npm ls` errors (as may occur due to missing peerDeps)',
   '  --production            Do not check devDependencies.',
   '  --ndjson                Print newline-delimited JSON objects.',
   '  --quiet                 Quiet mode, only exit(0/1).',
@@ -117,6 +118,7 @@ if (options['--init']) {
 function checkDependencies () {
   configuration.productionOnly = options['--production']
   configuration.corrections = configuration.corrections || options['--corrections']
+  configuration.disableLsErrorAborting = options['--disable-ls-error-aborting']
   require('./')(configuration, cwd, function (error, dependencies) {
     if (error) {
       die(error.message + '\n')
