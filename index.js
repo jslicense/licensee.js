@@ -8,13 +8,12 @@ var osi = require('spdx-osi')
 var parse = require('spdx-expression-parse')
 var parseJSON = require('json-parse-errback')
 var readPackageTree = require('read-package-tree')
-var runParallel = require('run-parallel')
 var satisfies = require('semver').satisfies
 var simpleConcat = require('simple-concat')
 var spawn = require('child_process').spawn
 var spdxWhitelisted = require('spdx-whitelisted')
 
-function licensee (configuration, path, callback) {
+async function licensee (configuration, path, callback) {
   if (!validConfiguration(configuration)) {
     return callback(new Error('Invalid configuration'))
   }
@@ -51,22 +50,30 @@ function licensee (configuration, path, callback) {
       // dependency tree.  Calling read-package-tree twice, at
       // the same time, is far from efficient.  But it works,
       // and doing so helps keep this package small.
-      runParallel({
-        dependencies: readDependencyList,
-        packages: readFilesystemTree
-      }, function (error, trees) {
-        if (error) callback(error)
-        else withTrees(trees.packages, trees.dependencies)
-      })
+      let packages, dependencies
+      try {
+        [packages, dependencies] = await Promise.all([
+          readFilesystemTree(),
+          readDependencyList()
+        ])
+      } catch (error) {
+        callback(error)
+        return
+      }
+      withTrees(packages, dependencies)
     } else {
       // If we are analyzing _all_ installed dependencies,
       // and don't care whether they're devDependencies
       // or not, just read `node_modules`.  We don't need
       // the dependency graph.
-      readFilesystemTree(function (error, packages) {
-        if (error) callback(error)
-        else withTrees(packages, false)
-      })
+      let packages
+      try {
+        packages = await readFilesystemTree()
+      } catch (error) {
+        callback(error)
+        return
+      }
+      withTrees(packages, false)
     }
   }
 
@@ -76,7 +83,7 @@ function licensee (configuration, path, callback) {
     ))
   }
 
-  function readDependencyList (done) {
+  function readDependencyList () {
     var executable = process.platform === 'win32' ? 'npm.cmd' : 'npm'
     var child = spawn(
       executable, ['ls', '--production', '--json'], { cwd: path }
@@ -90,31 +97,31 @@ function licensee (configuration, path, callback) {
     child.once('error', function (error) {
       outputError = error
     })
-    child.once('close', function (code) {
-      if (code !== 0) {
-        done(new Error('npm exited with status ' + code))
-      } else if (outputError) {
-        done(outputError)
-      } else {
-        parseJSON(json, function (error, graph) {
-          if (error) return done(error)
-          if (!has(graph, 'dependencies')) {
-            done(new Error('cannot interpret npm ls --json output'))
-          } else {
-            var flattened = {}
-            flattenDependencyTree(graph.dependencies, flattened)
-            done(null, flattened)
-          }
-        })
-      }
+    return new Promise((resolve, reject) => {
+      child.once('close', function (code) {
+        if (code !== 0) {
+          reject(new Error('npm exited with status ' + code))
+        } else if (outputError) {
+          reject(outputError)
+        } else {
+          parseJSON(json, function (error, graph) {
+            if (error) return reject(error)
+            if (!has(graph, 'dependencies')) {
+              reject(new Error('cannot interpret npm ls --json output'))
+            } else {
+              var flattened = {}
+              flattenDependencyTree(graph.dependencies, flattened)
+              resolve(flattened)
+            }
+          })
+        }
+      })
     })
   }
 
-  function readFilesystemTree (done) {
-    readPackageTree(path, function (error, tree) {
-      if (error) return done(error)
-      done(null, tree.children)
-    })
+  async function readFilesystemTree () {
+    const { children } = await readPackageTree(path)
+    return children
   }
 }
 
