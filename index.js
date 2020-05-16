@@ -91,11 +91,11 @@ function licensee (configuration, path, callback) {
       outputError = error
     })
     child.once('close', function (code) {
-      if (code !== 0) {
-        done(new Error('npm exited with status ' + code))
-      } else if (outputError) {
+      if (outputError) {
         done(outputError)
       } else {
+        if (code !== 0) console.error('Warning: npm exited with status ' + code)
+
         parseJSON(json, function (error, graph) {
           if (error) return done(error)
           if (!has(graph, 'dependencies')) {
