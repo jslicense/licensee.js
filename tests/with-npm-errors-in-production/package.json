@@ -1,0 +1,7 @@
+{
+  "name": "with-npm-errors-in-production",
+  "dependencies": {
+    "with-invalid-dependency": "^1.0.0"
+  },
+  "private": true
+}
