@@ -5,7 +5,8 @@
   "author": "Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)",
   "contributors": [
     "Jakob Krigovsky <jakob@krigovsky.com>",
-    "Brett Zamir <brett@brett-zamir.name>"
+    "Brett Zamir <brett@brett-zamir.name>",
+    "Andrew Monks <a@monks.co>"
   ],
   "dependencies": {
     "@blueoak/list": "^1.0.2",
