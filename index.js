@@ -65,7 +65,12 @@ function licensee (configuration, path, callback) {
       // the dependency graph.
       readFilesystemTree(function (error, packages) {
         if (error) callback(error)
-        else withTrees(packages, false)
+        else {
+          if (configuration.filterPackages) {
+            packages = configuration.filterPackages(packages)
+          }
+          withTrees(packages, false)
+        }
       })
     }
   }
