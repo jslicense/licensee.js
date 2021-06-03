@@ -46,7 +46,7 @@ if (options['--init']) {
       },
       packages: (
         options['--packages']
-          ? parsePackageWhitelist(options['--packages'])
+          ? parsePackageAllowlist(options['--packages'])
           : { optimist: '<=0.6.1' }
       ),
       corrections: false
@@ -81,7 +81,7 @@ if (options['--init']) {
       osi: options['--osi'] || undefined
     },
     packages: options['--packages']
-      ? parsePackageWhitelist(options['--packages'])
+      ? parsePackageAllowlist(options['--packages'])
       : {},
     corrections: options['--corrections']
   }
@@ -263,15 +263,15 @@ function die (message) {
   process.exit(1)
 }
 
-function parsePackageWhitelist (string) {
+function parsePackageAllowlist (string) {
   return string
     .split(',')
     .map(function (string) {
       return string.trim()
     })
-    .reduce(function (whitelist, string) {
+    .reduce(function (allowlist, string) {
       var split = string.split('@')
-      whitelist[split[0]] = split[1]
-      return whitelist
+      allowlist[split[0]] = split[1]
+      return allowlist
     }, {})
 }

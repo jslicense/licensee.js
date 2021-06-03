@@ -12,30 +12,30 @@ var runParallel = require('run-parallel')
 var satisfies = require('semver').satisfies
 var simpleConcat = require('simple-concat')
 var spawn = require('child_process').spawn
-var spdxWhitelisted = require('spdx-whitelisted')
+var spdxAllowlisted = require('spdx-whitelisted')
 
 function licensee (configuration, path, callback) {
   if (!validConfiguration(configuration)) {
     return callback(new Error('Invalid configuration'))
   }
-  configuration.licenses = compileLicenseWhitelist(configuration)
+  configuration.licenses = compileLicenseAllowlist(configuration)
   configuration.licensesParsed = (configuration.licenses || [])
-    .reduce(function (whitelist, element) {
+    .reduce(function (allowlist, element) {
       try {
         var parsed = parse(element)
         if (has(parsed, 'conjunction')) {
           throw new Error('Cannot match against "' + JSON.stringify(element) + '".')
         }
-        return whitelist.concat(parsed)
+        return allowlist.concat(parsed)
       } catch (e) {
-        return whitelist
+        return allowlist
       }
     }, [])
   if (
     configuration.licenses.length === 0 &&
     (!configuration.packages || Object.keys(configuration.packages).length === 0)
   ) {
-    callback(new Error('No licenses or packages whitelisted.'))
+    callback(new Error('No licenses or packages allowlisted.'))
   } else {
     if (configuration.productionOnly) {
       // In order to ignore devDependencies, we need to read:
@@ -214,7 +214,7 @@ function appearsIn (installed, dependencies) {
 }
 
 function resultForPackage (configuration, tree) {
-  var packageWhitelist = configuration.packages || {}
+  var packageAllowlist = configuration.packages || {}
   var result = {
     name: tree.package.name,
     license: tree.package.license,
@@ -283,14 +283,14 @@ function resultForPackage (configuration, tree) {
 
   result.approved = false
 
-  var packageWhitelisted = Object.keys(packageWhitelist)
+  var packageAllowlisted = Object.keys(packageAllowlist)
     .some(function (name) {
       return (
         result.name === name &&
-        satisfies(result.version, packageWhitelist[name]) === true
+        satisfies(result.version, packageAllowlist[name]) === true
       )
     })
-  if (packageWhitelisted) {
+  if (packageAllowlisted) {
     result.approved = true
     result.package = true
     return result
@@ -308,13 +308,13 @@ function resultForPackage (configuration, tree) {
     validSPDX = false
   }
 
-  var licenseWhitelist = configuration.licensesParsed
+  var licenseAllowlist = configuration.licensesParsed
   // Check against licensing rule.
-  var licenseWhitelisted = (
+  var licenseAllowlisted = (
     validSPDX &&
-    spdxWhitelisted(parsed, licenseWhitelist)
+    spdxAllowlisted(parsed, licenseAllowlist)
   )
-  if (licenseWhitelisted) {
+  if (licenseAllowlisted) {
     result.approved = true
   }
 
@@ -368,15 +368,15 @@ function licensesFromBlueOak (rating) {
   return ids
 }
 
-function compileLicenseWhitelist (configuration) {
+function compileLicenseAllowlist (configuration) {
   var licenses = configuration.licenses
-  var whitelist = []
+  var allowlist = []
   var spdx = licenses.spdx
-  if (spdx) pushMissing(spdx, whitelist)
+  if (spdx) pushMissing(spdx, allowlist)
   var blueOak = licenses.blueOak
-  if (blueOak) pushMissing(licensesFromBlueOak(blueOak), whitelist)
-  if (licenses.osi) pushMissing(osi, whitelist)
-  return whitelist
+  if (blueOak) pushMissing(licensesFromBlueOak(blueOak), allowlist)
+  if (licenses.osi) pushMissing(osi, allowlist)
+  return allowlist
 }
 
 function pushMissing (source, sink) {

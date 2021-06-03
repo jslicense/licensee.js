@@ -1,7 +1,0 @@
-{
-  "name": "out-of-whitelisted-range",
-  "dependencies": {
-    "mit-licensed": "1.0.0"
-  },
-  "private": true
-}
