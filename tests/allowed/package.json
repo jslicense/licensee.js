@@ -1,5 +1,5 @@
 {
-  "name": "out-of-allowlisted-range",
+  "name": "allowed",
   "dependencies": {
     "mit-licensed": "1.0.0"
   },

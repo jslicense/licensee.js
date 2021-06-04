@@ -37,10 +37,10 @@ file at the root of your package, like so:
 The `licenses` object adds licenses to an allowlist.
 Any package with [standard license metadata][metadata]
 that satisfies that allowlist according to
-[spdx-whitelisted][allowlisted] will not cause an error.
+[spdx-whitelisted][allowed] will not cause an error.
 
 [parse]: https://www.npmjs.com/package/spdx-expression-parse
-[allowlisted]: https://www.npmjs.com/package/spdx-whitelisted
+[allowed]: https://www.npmjs.com/package/spdx-whitelisted
 
 Instead of allowlisting each license by SPDX identifier,
 you can allowlist categories of licenses.

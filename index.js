@@ -12,7 +12,7 @@ var runParallel = require('run-parallel')
 var satisfies = require('semver').satisfies
 var simpleConcat = require('simple-concat')
 var spawn = require('child_process').spawn
-var spdxAllowlisted = require('spdx-whitelisted')
+var spdxAllowed = require('spdx-whitelisted')
 
 function licensee (configuration, path, callback) {
   if (!validConfiguration(configuration)) {
@@ -35,7 +35,7 @@ function licensee (configuration, path, callback) {
     configuration.licenses.length === 0 &&
     (!configuration.packages || Object.keys(configuration.packages).length === 0)
   ) {
-    callback(new Error('No licenses or packages allowlisted.'))
+    callback(new Error('No licenses or packages allowed.'))
   } else {
     if (configuration.productionOnly) {
       // In order to ignore devDependencies, we need to read:
@@ -283,14 +283,14 @@ function resultForPackage (configuration, tree) {
 
   result.approved = false
 
-  var packageAllowlisted = Object.keys(packageAllowlist)
+  var packageAllowed = Object.keys(packageAllowlist)
     .some(function (name) {
       return (
         result.name === name &&
         satisfies(result.version, packageAllowlist[name]) === true
       )
     })
-  if (packageAllowlisted) {
+  if (packageAllowed) {
     result.approved = true
     result.package = true
     return result
@@ -310,11 +310,11 @@ function resultForPackage (configuration, tree) {
 
   var licenseAllowlist = configuration.licensesParsed
   // Check against licensing rule.
-  var licenseAllowlisted = (
+  var licenseAllowed = (
     validSPDX &&
-    spdxAllowlisted(parsed, licenseAllowlist)
+    spdxAllowed(parsed, licenseAllowlist)
   )
-  if (licenseAllowlisted) {
+  if (licenseAllowed) {
     result.approved = true
   }
 
