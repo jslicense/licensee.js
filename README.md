@@ -7,7 +7,7 @@ Check npm package dependency license metadata against rules.
 Licensee accepts two kinds of configuration:
 
 1. a rule about permitted licenses
-2. a package whitelist of name-and-range pairs
+2. a package allowlist of name-and-range pairs
 
 You can set configuration with command flags or a `.licensee.json`
 file at the root of your package, like so:
@@ -34,16 +34,16 @@ file at the root of your package, like so:
 }
 ```
 
-The `licenses` object adds licenses to a whitelist.
+The `licenses` object adds licenses to an allowlist.
 Any package with [standard license metadata][metadata]
-that satisfies that whitelist according to
-[spdx-whitelisted][whitelisted] will not cause an error.
+that satisfies that allowlist according to
+[spdx-whitelisted][allowed] will not cause an error.
 
 [parse]: https://www.npmjs.com/package/spdx-expression-parse
-[whitelisted]: https://www.npmjs.com/package/spdx-whitelisted
+[allowed]: https://www.npmjs.com/package/spdx-whitelisted
 
-Instead of whitelisting each license by SPDX identifier,
-you can whitelist categories of licenses.
+Instead of allowlisting each license by SPDX identifier,
+you can allowlist categories of licenses.
 
 For example, you can specify a minimum Blue Oak Council [license
 rating]---lead, bronze, silver, or gold---like so:

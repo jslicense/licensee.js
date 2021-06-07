@@ -1,7 +1,0 @@
-{
-  "name": "no-whitelist",
-  "dependencies": {
-    "mit-licensed": "1.0.0"
-  },
-  "private": true
-}
