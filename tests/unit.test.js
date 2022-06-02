@@ -49,7 +49,7 @@ tap.test('unit', function (test) {
             }),
             'rejects GPL-2.0-only'
           )
-          fs.rmdir(directory, { recursive: true }, function (error) {
+          fs.rm(directory, { recursive: true }, function (error) {
             test.ifError(error, 'rm -rf test dir')
             test.end()
           })
