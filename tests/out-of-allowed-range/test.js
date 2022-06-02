@@ -10,8 +10,8 @@ tap.equal(
     'mit-licensed@1.0.0',
     '  NOT APPROVED',
     '  Terms: MIT',
-    '  Repository: git+https://github.com/jslicense/mit-licensed.js.git',
-    '  Homepage: https://github.com/jslicense/mit-licensed.js#readme',
+    '  Repository: jslicense/mit-licensed.js',
+    '  Homepage: None listed',
     '  Author: Kyle E. Mitchell <kyle@kemitchell.com> (https://kemitchell.com/)',
     '  Contributors: None listed'
   ].join('\n')
