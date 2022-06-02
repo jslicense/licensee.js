@@ -77,26 +77,25 @@ function findIssues (configuration, children, results) {
   if (children) {
     children.forEach(function (child) {
       if (
-        !configuration.productionOnly ||
-        !child.dev
-      ) {
-        var result = resultForPackage(configuration, child)
-        // Deduplicate.
-        var existing = results.find(function (existing) {
-          return (
-            existing.name === result.name &&
-            existing.version === result.version
-          )
-        })
-        if (existing) {
-          if (existing.duplicates) {
-            existing.duplicates.push(result)
-          } else {
-            existing.duplicates = [result]
-          }
+        configuration.productionOnly &&
+        child.dev
+      ) return
+      var result = resultForPackage(configuration, child)
+      // Deduplicate.
+      var existing = results.find(function (existing) {
+        return (
+          existing.name === result.name &&
+          existing.version === result.version
+        )
+      })
+      if (existing) {
+        if (existing.duplicates) {
+          existing.duplicates.push(result)
         } else {
-          results.push(result)
+          existing.duplicates = [result]
         }
+      } else {
+        results.push(result)
       }
     })
     return results
@@ -105,14 +104,15 @@ function findIssues (configuration, children, results) {
 
 function resultForPackage (configuration, tree) {
   var packageAllowlist = configuration.packages || {}
+  console.log('%s is %j', 'tree.package', tree.package)
   var result = {
     name: tree.name,
+    version: tree.version,
     license: tree.package.license,
     author: tree.package.author,
     contributors: tree.package.contributors,
     repository: tree.package.repository,
     homepage: tree.package.homepage,
-    version: tree.package.version,
     parent: tree.parent,
     path: tree.realpath
   }
