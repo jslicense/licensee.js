@@ -104,7 +104,6 @@ function findIssues (configuration, children, results) {
 
 function resultForPackage (configuration, tree) {
   var packageAllowlist = configuration.packages || {}
-  console.log('%s is %j', 'tree.package', tree.package)
   var result = {
     name: tree.name,
     version: tree.version,
