@@ -33,27 +33,17 @@ function licensee (configuration, path, callback) {
   ) {
     callback(new Error('No licenses or packages allowed.'))
   } else {
-    readFilesystemTree(function (error, children) {
-      if (error) callback(error)
-      else {
-        if (configuration.filterPackages) {
-          children = configuration.filterPackages(children)
-        }
-        callback(null, findIssues(
-          configuration, children, []
-        ))
-      }
-    })
-  }
-
-  function readFilesystemTree (done) {
     var arborist = new Arborist({ path })
     arborist.loadActual()
       .catch(function (error) {
-        return done(error)
+        return callback(error)
       })
       .then(function (tree) {
-        return done(null, tree.children)
+        var children = Array.from(tree.children.values())
+        if (configuration.filterPackages) {
+          children = configuration.filterPackages(children)
+        }
+        callback(null, findIssues(configuration, children, []))
       })
   }
 }
@@ -85,7 +75,7 @@ function isString (argument) {
 
 function findIssues (configuration, children, results) {
   if (children) {
-    Array.from(children.values()).forEach(function (child) {
+    children.forEach(function (child) {
       if (
         !configuration.productionOnly ||
         !child.dev
@@ -107,10 +97,6 @@ function findIssues (configuration, children, results) {
         } else {
           results.push(result)
         }
-        findIssues(configuration, child, results)
-      }
-      if (child.children) {
-        findIssues(configuration, child.children, results)
       }
     })
     return results
@@ -119,10 +105,14 @@ function findIssues (configuration, children, results) {
 
 function resultForPackage (configuration, tree) {
   var packageAllowlist = configuration.packages || {}
-  // TODO: fetch license with path
   var result = {
     name: tree.name,
-    version: tree.version,
+    license: tree.package.license,
+    author: tree.package.author,
+    contributors: tree.package.contributors,
+    repository: tree.package.repository,
+    homepage: tree.package.homepage,
+    version: tree.package.version,
     parent: tree.parent,
     path: tree.realpath
   }
