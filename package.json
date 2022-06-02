@@ -39,6 +39,6 @@
   "scripts": {
     "licenses": "./licensee --errors-only",
     "lint": "standard index.js licensee test/**/test.js",
-    "test": "tap tests/**/test.js"
+    "test": "tap tests/unit.test.js tests/**/test.js"
   }
 }
