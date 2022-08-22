@@ -29,6 +29,7 @@
     "licensee"
   ],
   "devDependencies": {
+    "rimraf": "^3.0.2",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
     "standard": "^14.3.1",

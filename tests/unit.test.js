@@ -3,6 +3,7 @@ var runParallel = require('run-parallel')
 var mod = require('../')
 var os = require('os')
 var path = require('path')
+var rimraf = require('rimraf')
 var tap = require('tap')
 
 tap.test('unit', function (test) {
@@ -49,7 +50,7 @@ tap.test('unit', function (test) {
             }),
             'rejects GPL-2.0-only'
           )
-          fs.rm(directory, { recursive: true }, function (error) {
+          rimraf(directory, function (error) {
             test.ifError(error, 'rm -rf test dir')
             test.end()
           })
