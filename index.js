@@ -35,15 +35,15 @@ function licensee (configuration, path, callback) {
   } else {
     var arborist = new Arborist({ path })
     arborist.loadActual({ forceActual: true })
-      .catch(function (error) {
-        return callback(error)
-      })
       .then(function (tree) {
         var children = Array.from(tree.children.values())
         if (configuration.filterPackages) {
           children = configuration.filterPackages(children)
         }
         callback(null, findIssues(configuration, children, []))
+      })
+      .catch(function (error) {
+        return callback(error)
       })
   }
 }
