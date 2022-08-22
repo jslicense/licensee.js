@@ -3,12 +3,10 @@ module.exports = licensee
 var Arborist = require('@npmcli/arborist')
 var blueOakList = require('@blueoak/list')
 var correctLicenseMetadata = require('correct-license-metadata')
-var fs = require('fs')
 var has = require('has')
 var npmLicenseCorrections = require('npm-license-corrections')
 var osi = require('spdx-osi')
 var parse = require('spdx-expression-parse')
-var joinPath = require('path').join
 var satisfies = require('semver').satisfies
 var spdxAllowed = require('spdx-whitelisted')
 
@@ -35,29 +33,18 @@ function licensee (configuration, path, callback) {
   ) {
     callback(new Error('No licenses or packages allowed.'))
   } else {
-    // Delete node_modules/.package-lock.json, Arborist/npm's
-    // on-disk cache of the resolved package tree, if
-    // present. When this is present, it may or may
-    // not include license metadata for packages. See
-    // https://github.com/jslicense/licensee.js/issues/64#issuecomment-1145256328=
-    fs.rm(
-      joinPath(path, 'node_modules', '.package-lock.json'),
-      { force: true },
-      function (/* ignore errors */) {
-        var arborist = new Arborist({ path })
-        arborist.loadActual()
-          .catch(function (error) {
-            return callback(error)
-          })
-          .then(function (tree) {
-            var children = Array.from(tree.children.values())
-            if (configuration.filterPackages) {
-              children = configuration.filterPackages(children)
-            }
-            callback(null, findIssues(configuration, children, []))
-          })
-      }
-    )
+    var arborist = new Arborist({ path })
+    arborist.loadActual({ forceActual: true })
+      .catch(function (error) {
+        return callback(error)
+      })
+      .then(function (tree) {
+        var children = Array.from(tree.children.values())
+        if (configuration.filterPackages) {
+          children = configuration.filterPackages(children)
+        }
+        callback(null, findIssues(configuration, children, []))
+      })
   }
 }
 
