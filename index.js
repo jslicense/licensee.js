@@ -107,7 +107,7 @@ function findIssues (configuration, dependencies) {
 function resultForPackage (configuration, tree) {
   var packageAllowlist = configuration.packages || {}
   var result = {
-    name: tree.name,
+    name: tree.package.name,
     version: tree.version,
     license: tree.package.license,
     author: tree.package.author,
