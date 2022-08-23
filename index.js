@@ -36,11 +36,11 @@ function licensee (configuration, path, callback) {
     var arborist = new Arborist({ path })
     arborist.loadActual({ forceActual: true })
       .then(function (tree) {
-        var children = Array.from(tree.children.values())
+        var dependencies = Array.from(tree.children.values())
         if (configuration.filterPackages) {
-          children = configuration.filterPackages(children)
+          dependencies = configuration.filterPackages(dependencies)
         }
-        callback(null, findIssues(configuration, children, []))
+        callback(null, findIssues(configuration, dependencies))
       })
       .catch(function (error) {
         return callback(error)
@@ -73,33 +73,32 @@ function isString (argument) {
   return typeof argument === 'string'
 }
 
-function findIssues (configuration, children, results) {
-  if (children) {
-    children.forEach(function (child) {
-      if (
-        configuration.productionOnly &&
-        child.dev
-      ) return
-      var result = resultForPackage(configuration, child)
-      // Deduplicate.
-      var existing = results.find(function (existing) {
-        return (
-          existing.name === result.name &&
-          existing.version === result.version
-        )
-      })
-      if (existing) {
-        if (existing.duplicates) {
-          existing.duplicates.push(result)
-        } else {
-          existing.duplicates = [result]
-        }
-      } else {
-        results.push(result)
-      }
+function findIssues (configuration, dependencies) {
+  var results = []
+  dependencies.forEach(function (dependency) {
+    if (
+      configuration.productionOnly &&
+      dependency.dev
+    ) return
+    var result = resultForPackage(configuration, dependency)
+    // Deduplicate.
+    var existing = results.find(function (existing) {
+      return (
+        existing.name === result.name &&
+        existing.version === result.version
+      )
     })
-    return results
-  } else return results
+    if (existing) {
+      if (existing.duplicates) {
+        existing.duplicates.push(result)
+      } else {
+        existing.duplicates = [result]
+      }
+    } else {
+      results.push(result)
+    }
+  })
+  return results
 }
 
 function resultForPackage (configuration, tree) {
