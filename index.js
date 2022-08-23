@@ -36,7 +36,10 @@ function licensee (configuration, path, callback) {
     var arborist = new Arborist({ path })
     arborist.loadActual({ forceActual: true })
       .then(function (tree) {
-        var dependencies = Array.from(tree.children.values())
+        var dependencies = Array.from(tree.inventory.values())
+          .filter(function (dependency) {
+            return !dependency.isProjectRoot
+          })
         if (configuration.filterPackages) {
           dependencies = configuration.filterPackages(dependencies)
         }
