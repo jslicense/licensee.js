@@ -16,7 +16,7 @@
     "fs-access": "^2.0.0",
     "has": "^1.0.3",
     "npm-license-corrections": "^1.0.0",
-    "semver": "^6.3.0",
+    "semver": "^7.3.7",
     "spdx-expression-parse": "^3.0.0",
     "spdx-expression-validate": "^2.0.0",
     "spdx-osi": "^3.0.0",
