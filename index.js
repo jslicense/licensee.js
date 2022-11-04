@@ -101,6 +101,11 @@ function findIssues (configuration, dependencies) {
       results.push(result)
     }
   })
+
+  results.sort(function (a, b) {
+    return a.name.localeCompare(b.name)
+  })
+
   return results
 }
 
