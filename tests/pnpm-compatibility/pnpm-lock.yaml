@@ -1,0 +1,13 @@
+lockfileVersion: 5.4
+
+specifiers:
+  mit-licensed: ^1.0.0
+
+dependencies:
+  mit-licensed: 1.0.0
+
+packages:
+
+  /mit-licensed/1.0.0:
+    resolution: {integrity: sha512-aCppNedGHnTQZvrrNcX43bMZSvLHlH2ZwC7NJqr05onseQjx0+GDGz3a44ONAVpefHPW8GQN8kNW02e+MG088A==}
+    dev: false
