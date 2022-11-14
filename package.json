@@ -13,7 +13,6 @@
     "@npmcli/arborist": "^6.1.2",
     "correct-license-metadata": "^1.4.0",
     "docopt": "^0.6.2",
-    "fs-access": "^2.0.0",
     "has": "^1.0.3",
     "npm-license-corrections": "^1.6.2",
     "semver": "^7.3.8",
