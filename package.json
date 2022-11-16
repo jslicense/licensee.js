@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "@blueoak/list": "^9.0.0",
-    "@npmcli/arborist": "^5.6.3",
+    "@npmcli/arborist": "^6.1.2",
     "correct-license-metadata": "^1.4.0",
     "docopt": "^0.6.2",
     "fs-access": "^2.0.0",
@@ -43,6 +43,6 @@
     "test": "tap --no-check-coverage tests/unit.test.js tests/**/test.js"
   },
   "engines": {
-    "node": ">= 12.22"
+    "node": ">= 14.17"
   }
 }
