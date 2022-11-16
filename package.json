@@ -29,6 +29,7 @@
     "licensee"
   ],
   "devDependencies": {
+    "aud": "^2.0.1",
     "rimraf": "^3.0.2",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
@@ -40,7 +41,10 @@
   "scripts": {
     "licenses": "./licensee --errors-only",
     "lint": "standard index.js licensee test/**/test.js",
-    "test": "tap --no-check-coverage tests/unit.test.js tests/**/test.js"
+    "pretest": "npm run lint",
+    "tests-only": "tap --no-check-coverage tests/unit.test.js tests/**/test.js",
+    "test": "npm run tests-only",
+    "posttest": "aud --production"
   },
   "engines": {
     "node": ">= 14.17"
