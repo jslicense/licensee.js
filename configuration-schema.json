@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "required": [
+    "licenses"
+  ],
+  "properties": {
+    "licenses": {
+      "type": "object",
+      "properties": {
+        "blueOak": {
+          "enum": [
+            "lead",
+            "bronze",
+            "silver",
+            "gold"
+          ]
+        },
+        "spdx": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/nonEmptyString"
+          }
+        },
+        "osi": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "packages": {
+      "type": "object",
+      "patternProperties": {
+        ".+": {
+          "$ref": "#/definitions/nonEmptyString"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

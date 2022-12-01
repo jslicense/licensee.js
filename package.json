@@ -11,6 +11,7 @@
   "dependencies": {
     "@blueoak/list": "^9.0.0",
     "@npmcli/arborist": "^6.1.2",
+    "ajv": "^8.11.2",
     "correct-license-metadata": "^1.4.0",
     "docopt": "^0.6.2",
     "has": "^1.0.3",
