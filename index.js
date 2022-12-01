@@ -56,7 +56,13 @@ function validConfiguration (configuration) {
     isObject(configuration) &&
     has(configuration, 'licenses') &&
     isObject(configuration.licenses) &&
-    has(configuration, 'packages')
+    (!has(configuration.licenses, 'blueOak') ||
+      (
+        blueOakList.some(({ name }) =>
+          name.toLowerCase() === configuration.licenses.blueOak.toLowerCase()
+        )
+      )) &&
+    (has(configuration, 'packages')
       ? (
         // Validate `packages` property.
         isObject(configuration.packages) &&
@@ -64,7 +70,7 @@ function validConfiguration (configuration) {
           .every(function (key) {
             return isString(configuration.packages[key])
           })
-      ) : true
+      ) : true)
   )
 }
 
