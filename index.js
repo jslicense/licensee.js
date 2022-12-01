@@ -11,7 +11,8 @@ var satisfies = require('semver').satisfies
 var spdxAllowed = require('spdx-whitelisted')
 
 function licensee (configuration, path, callback) {
-  if (!validConfiguration(configuration)) {
+  var errors = configurationErrors(configuration)
+  if (errors) {
     return callback(new Error('Invalid configuration'))
   }
   configuration.licenses = compileLicenseAllowlist(configuration)
@@ -51,29 +52,16 @@ function licensee (configuration, path, callback) {
   }
 }
 
-function validConfiguration (configuration) {
-  return (
-    isObject(configuration) &&
-    has(configuration, 'licenses') &&
-    isObject(configuration.licenses) &&
-    has(configuration, 'packages')
-      ? (
-        // Validate `packages` property.
-        isObject(configuration.packages) &&
-        Object.keys(configuration.packages)
-          .every(function (key) {
-            return isString(configuration.packages[key])
-          })
-      ) : true
-  )
-}
+var Ajv = require('ajv')
+var ajv = new Ajv({ allErrors: true })
+var validate = ajv.compile(require('./configuration-schema'))
 
-function isObject (argument) {
-  return argument && typeof argument === 'object'
-}
-
-function isString (argument) {
-  return typeof argument === 'string'
+function configurationErrors (configuration) {
+  if (validate(configuration)) {
+    return false
+  } else {
+    return validate.errors
+  }
 }
 
 function findIssues (configuration, dependencies) {
