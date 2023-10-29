@@ -44,8 +44,5 @@
     "tests-only": "tap --no-check-coverage tests/unit.test.js tests/**/test.js",
     "test": "npm run tests-only",
     "posttest": "aud --production"
-  },
-  "engines": {
-    "node": ">= 14.17"
   }
 }
