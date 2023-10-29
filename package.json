@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "@blueoak/list": "^9.0.0",
-    "@npmcli/arborist": "^6.1.2",
+    "@npmcli/arborist": "^7.2.0",
     "correct-license-metadata": "^1.4.0",
     "docopt": "^0.6.2",
     "has": "^1.0.3",
@@ -46,6 +46,6 @@
     "posttest": "aud --production"
   },
   "engines": {
-    "node": ">= 14.17"
+    "node": "^16.14.0 || >=18.0.0"
   }
 }
