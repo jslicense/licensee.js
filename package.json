@@ -28,11 +28,11 @@
     "licensee"
   ],
   "devDependencies": {
-    "aud": "^2.0.1",
+    "aud": "^2.0.4",
     "rimraf": "^3.0.2",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
-    "standard": "^14.3.1",
+    "standard": "^14.3.4",
     "tap": "^16.3.0"
   },
   "license": "Apache-2.0",
