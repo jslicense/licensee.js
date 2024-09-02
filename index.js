@@ -3,7 +3,7 @@ module.exports = licensee
 var Arborist = require('@npmcli/arborist')
 var blueOakList = require('@blueoak/list')
 var correctLicenseMetadata = require('correct-license-metadata')
-var has = require('hasown')
+var hasOwn = require('hasown')
 var npmLicenseCorrections = require('npm-license-corrections')
 var osi = require('spdx-osi')
 var parse = require('spdx-expression-parse')
@@ -280,4 +280,8 @@ function pushMissing (source, sink) {
   source.forEach(function (element) {
     if (sink.indexOf(element) === -1) sink.push(element)
   })
+}
+
+function has (object, key) {
+  return hasOwn(object, key) && object[key] !== undefined
 }
