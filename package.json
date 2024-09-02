@@ -10,7 +10,7 @@
   ],
   "dependencies": {
     "@blueoak/list": "^15.0.0",
-    "@npmcli/arborist": "^7.5.4",
+    "@npmcli/arborist": "^6.5.0",
     "correct-license-metadata": "^1.4.0",
     "docopt": "^0.6.2",
     "hasown": "^2.0.0",
@@ -28,11 +28,11 @@
     "licensee"
   ],
   "devDependencies": {
-    "rimraf": "^6.0.1",
+    "rimraf": "^4.3.1",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
     "standard": "^17.1.0",
-    "tap": "^21.0.1"
+    "tap": "^16.3.0"
   },
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
@@ -42,7 +42,7 @@
     "pretest": "npm run lint",
     "tests-only": "tap --no-check-coverage tests/unit.test.js tests/**/test.js",
     "test": "npm run tests-only",
-    "posttest": "npm audit --production"
+    "posttest": "npx 'npm@>=10.2' audit --production"
   },
   "engines": {
     "node": ">= 14.17"
