@@ -29,6 +29,7 @@
   ],
   "devDependencies": {
     "aud": "^2.0.4",
+    "ls-engines": "^0.9.3",
     "rimraf": "^3.0.2",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
@@ -41,11 +42,12 @@
     "licenses": "./licensee --errors-only",
     "lint": "standard index.js licensee tests/**/*.js",
     "pretest": "npm run lint",
+    "postlint": "ls-engines --current",
     "tests-only": "tap --no-check-coverage tests/unit.test.js tests/**/test.js",
     "test": "npm run tests-only",
     "posttest": "aud --production"
   },
   "engines": {
-    "node": ">= 14.17"
+    "node": "^18.12 || ^20.9 || >= 22.7"
   }
 }
