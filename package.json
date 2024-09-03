@@ -39,10 +39,10 @@
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
-    "engines": "ls-engines --current",
     "licenses": "./licensee --errors-only",
     "lint": "standard index.js licensee tests/**/*.js",
     "pretest": "npm run lint",
+    "postlint": "ls-engines --current",
     "tests-only": "tap --no-check-coverage tests/unit.test.js tests/**/test.js",
     "test": "npm run tests-only",
     "posttest": "aud --production"
