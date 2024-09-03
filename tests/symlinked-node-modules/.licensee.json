@@ -1,0 +1,13 @@
+{
+  "licenses": {
+    "spdx": [
+      "Apache-2.0"
+    ]
+  },
+  "packages": {},
+  "ignore": [
+    {
+      "prefix": "mit-"
+    }
+  ]
+}

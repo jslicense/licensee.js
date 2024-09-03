@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-var access = require('fs-access')
 var docopt = require('docopt')
 var fs = require('fs')
-var has = require('has')
+var has = require('hasown')
 var path = require('path')
 var validSPDX = require('spdx-expression-validate')
 
@@ -87,7 +86,7 @@ if (options['--init']) {
   }
   checkDependencies()
 } else {
-  access(configurationPath, function (error) {
+  fs.access(configurationPath, fs.constants.R_OK, function (error) {
     if (error) {
       die(
         [

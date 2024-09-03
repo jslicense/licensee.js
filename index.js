@@ -3,7 +3,7 @@ module.exports = licensee
 var Arborist = require('@npmcli/arborist')
 var blueOakList = require('@blueoak/list')
 var correctLicenseMetadata = require('correct-license-metadata')
-var has = require('has')
+var hasOwn = require('hasown')
 var npmLicenseCorrections = require('npm-license-corrections')
 var osi = require('spdx-osi')
 var parse = require('spdx-expression-parse')
@@ -56,7 +56,13 @@ function validConfiguration (configuration) {
     isObject(configuration) &&
     has(configuration, 'licenses') &&
     isObject(configuration.licenses) &&
-    has(configuration, 'packages')
+    (!has(configuration.licenses, 'blueOak') ||
+      (
+        blueOakList.some(({ name }) =>
+          name.toLowerCase() === configuration.licenses.blueOak.toLowerCase()
+        )
+      )) &&
+    (has(configuration, 'packages')
       ? (
         // Validate `packages` property.
         isObject(configuration.packages) &&
@@ -64,7 +70,7 @@ function validConfiguration (configuration) {
           .every(function (key) {
             return isString(configuration.packages[key])
           })
-      ) : true
+      ) : true)
   )
 }
 
@@ -279,4 +285,8 @@ function pushMissing (source, sink) {
   source.forEach(function (element) {
     if (sink.indexOf(element) === -1) sink.push(element)
   })
+}
+
+function has (object, key) {
+  return hasOwn(object, key) && object[key] !== undefined
 }

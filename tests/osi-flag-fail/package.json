@@ -1,0 +1,7 @@
+{
+  "name": "osi-flag-pass",
+  "dependencies": {
+    "cc0-1.0-licensed": "1.0.0"
+  },
+  "private": true
+}
