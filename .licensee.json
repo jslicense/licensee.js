@@ -12,6 +12,7 @@
     "doctrine": "1.5.0",
     "esutils": "2.0.2",
     "json-schema": "0.2.3",
+    "jsonp": "0.2.1",
     "wordwrap": "0.0.2",
     "longest": "1.0.1",
     "repeat-element": "1.1.2"
