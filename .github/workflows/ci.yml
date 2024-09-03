@@ -10,4 +10,4 @@ jobs:
     uses: ljharb/actions/.github/workflows/node-majors.yml@main
     with:
       range: '>= 14.17'
-      command: 'npm run tests-only && npm run licenses'
+      command: 'npm run engines && npm run tests-only && npm run licenses'

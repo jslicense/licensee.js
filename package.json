@@ -29,6 +29,7 @@
   ],
   "devDependencies": {
     "aud": "^2.0.4",
+    "ls-engines": "^0.9.3",
     "rimraf": "^3.0.2",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
@@ -38,6 +39,7 @@
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
+    "engines": "ls-engines --check",
     "licenses": "./licensee --errors-only",
     "lint": "standard index.js licensee tests/**/*.js",
     "pretest": "npm run lint",
