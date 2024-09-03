@@ -9,5 +9,5 @@ jobs:
   tests:
     uses: ljharb/actions/.github/workflows/node-majors.yml@main
     with:
-      range: '>= 14.17'
+      range: '^18.12 || ^20.9 || >= 22.7'
       command: 'npm run engines && npm run tests-only && npm run licenses'
