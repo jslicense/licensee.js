@@ -28,21 +28,22 @@
     "licensee"
   ],
   "devDependencies": {
-    "rimraf": "^4.3.1",
+    "aud": "^2.0.4",
+    "rimraf": "^3.0.2",
     "run-parallel": "^1.2.0",
     "spawn-sync": "^2.0.0",
-    "standard": "^17.1.0",
+    "standard": "^14.3.4",
     "tap": "^16.3.0"
   },
   "license": "Apache-2.0",
   "repository": "jslicense/licensee.js",
   "scripts": {
     "licenses": "./licensee --errors-only",
-    "lint": "standard index.js licensee test/**/test.js",
+    "lint": "standard index.js licensee tests/**/*.js",
     "pretest": "npm run lint",
     "tests-only": "tap --no-check-coverage tests/unit.test.js tests/**/test.js",
     "test": "npm run tests-only",
-    "posttest": "npx 'npm@>=10.2' audit --production"
+    "posttest": "aud --production"
   },
   "engines": {
     "node": ">= 14.17"
