@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var docopt = require('docopt')
+var docopt = require('@quenk/docopt')
 var fs = require('fs')
 var has = require('hasown')
 var path = require('path')
