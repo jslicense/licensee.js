@@ -111,7 +111,7 @@ function findIssues (configuration, dependencies) {
     }
   })
 
-  // Dependencies defined as file:./src/js-vendor/tablesorter will not have metadata
+  // Non existing symlinks will not have metadata
   const noName = results.filter(x => !x.name)
 
   if (!noName) {
