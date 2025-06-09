@@ -12,7 +12,8 @@ var spdxAllowed = require('spdx-whitelisted')
 
 async function licensee (configurationOriginal, path, callback) {
   // We do not want to modify original object when looping this method
-  configuration = structuredClone(configurationOriginal)
+  // 'structuredClone' is not defined in test
+  var configuration = JSON.parse(JSON.stringify(configurationOriginal))
 
   if (!validConfiguration(configuration)) {
     return callback(new Error('Invalid configuration'))
