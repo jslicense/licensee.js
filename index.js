@@ -237,6 +237,9 @@ function resultForPackage (configuration, tree) {
 }
 
 function startsWith (string, prefix) {
+  if (!string) {
+    return false
+  }
   return string.toLowerCase().indexOf(prefix.toLowerCase()) === 0
 }
 
