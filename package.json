@@ -48,6 +48,6 @@
     "posttest": "aud --production"
   },
   "engines": {
-    "node": ">=20.17"
+    "node": "^20.20 || ^22.22 || ^24.14 || >= 25.4"
   }
 }
