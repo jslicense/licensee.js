@@ -1,0 +1,7 @@
+{
+  "name": "nonexistent-symlinked-subdependency",
+  "dependencies": {
+    "@nonexistent/symlinked": "*"
+  },
+  "private": true
+}

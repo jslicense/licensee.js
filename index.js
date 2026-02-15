@@ -10,7 +10,11 @@ var parse = require('spdx-expression-parse')
 var satisfies = require('semver').satisfies
 var spdxAllowed = require('spdx-whitelisted')
 
-function licensee (configuration, path, callback) {
+async function licensee (configurationOriginal, path, callback) {
+  // We do not want to modify original object when looping this method
+  // 'structuredClone' is not defined in test
+  var configuration = JSON.parse(JSON.stringify(configurationOriginal))
+
   if (!validConfiguration(configuration)) {
     return callback(new Error('Invalid configuration'))
   }
@@ -34,7 +38,7 @@ function licensee (configuration, path, callback) {
     callback(new Error('No licenses or packages allowed.'))
   } else {
     var arborist = new Arborist({ path })
-    arborist.loadActual({ forceActual: true })
+    return arborist.loadActual({ forceActual: true })
       .then(function (tree) {
         var dependencies = Array.from(tree.inventory.values())
           .filter(function (dependency) {
@@ -43,7 +47,7 @@ function licensee (configuration, path, callback) {
         if (configuration.filterPackages) {
           dependencies = configuration.filterPackages(dependencies)
         }
-        callback(null, findIssues(configuration, dependencies))
+        return callback(null, findIssues(configuration, dependencies))
       })
       .catch(function (error) {
         return callback(error)
@@ -108,9 +112,14 @@ function findIssues (configuration, dependencies) {
     }
   })
 
-  results.sort(function (a, b) {
-    return a.name.localeCompare(b.name)
-  })
+  // Non existing symlinks will not have metadata
+  const noName = results.filter(x => !x.name)
+
+  if (!noName) {
+    results.sort(function (a, b) {
+      return a.name.localeCompare(b.name)
+    })
+  }
 
   return results
 }
@@ -174,6 +183,11 @@ function resultForPackage (configuration, tree) {
         typeof ignore.author === 'string' &&
         personMatches(result.author, ignore.author)
       ) return true
+      if (
+        ignore.path &&
+        typeof ignore.path === 'string' &&
+        result.path.includes(ignore.path)
+      ) return true
       return false
     })
     if (ignored) {
@@ -224,6 +238,9 @@ function resultForPackage (configuration, tree) {
 }
 
 function startsWith (string, prefix) {
+  if (!string) {
+    return false
+  }
   return string.toLowerCase().indexOf(prefix.toLowerCase()) === 0
 }
 
