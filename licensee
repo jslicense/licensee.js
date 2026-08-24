@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 var docopt = require('docopt')
 var fs = require('fs')
-var has = require('hasown')
 var path = require('path')
 var validSPDX = require('spdx-expression-validate')
 
@@ -249,7 +248,7 @@ function formatRepo (repo) {
   if (repo) {
     if (typeof repo === 'string') {
       return repo
-    } else if (has(repo, 'url')) {
+    } else if (Object.hasOwn(repo, 'url')) {
       return repo.url
     }
   } else {
