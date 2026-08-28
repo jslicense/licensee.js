@@ -1,0 +1,9 @@
+{
+  "licenses": {
+    "spdx": [
+      "Apache-2.0"
+    ]
+  },
+  "packages": {},
+  "ignore": [{ "path": "nonexistent/symlinked/node_modules/subdependency" }]
+}
