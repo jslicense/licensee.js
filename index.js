@@ -37,7 +37,7 @@ function licensee (configuration, path, callback) {
       .then(function (tree) {
         var dependencies = Array.from(tree.inventory.values())
           .filter(function (dependency) {
-            return !dependency.isProjectRoot
+            return !dependency.isProjectRoot && dependency.package.name
           })
         if (configuration.filterPackages) {
           dependencies = configuration.filterPackages(dependencies)
